@@ -14,3 +14,61 @@ datasource db {
   url      = env("DATABASE_URL")
   schemas  = ["auth"]
 }
+
+model Role {
+  id         Int       @unique @default(autoincrement())
+  name       String    @db.VarChar()
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
+
+  Permission Permission[]
+  User       User[]
+
+  @@map("roles")
+  @@schema("auth")
+}
+
+model Permission {
+  id         Int     @unique @default(autoincrement())
+  role       Role    @relation(fields: [role_id], references: [id])
+  role_id    Int     @db.Integer()
+  action     String  @db.VarChar()// all / manage
+  subject    String  @db.VarChar()// postingan
+  inverted   Boolean @default(false)
+  conditions Json?   @db.JsonB()// created_by === currentUser.id
+  reason     String? @db.Text()
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
+
+  @@map("permissions")
+  @@schema("auth")
+}
+
+model User {
+  id         Int     @unique @default(autoincrement())
+  first_name String  @db.VarChar(100)
+  last_name  String? @db.VarChar(100)
+  email      String  @unique @db.VarChar(255)
+
+  role    Role @relation(fields: [role_id], references: [id])
+  role_id Int  @db.Integer()
+
+  Story Story[] @relation(name: "created_user")
+
+  @@map("users")
+  @@schema("auth")
+}
+
+model Story {
+  id   Int    @unique @default(autoincrement())
+  name String @db.VarChar()
+
+  created_user User @relation(name: "created_user", fields: [created_by], references: [id])
+  created_by   Int  @db.Integer()
+
+  @@map("stories")
+  @@schema("auth")
+}
