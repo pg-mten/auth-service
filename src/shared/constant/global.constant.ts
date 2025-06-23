@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
-export const API_PREFIX = `/api/${process.env.VERSION || 'v1'}`;
+export const VERSION = process.env.VERSION || 'v1';
+export const API_PREFIX = `/api/${VERSION}`;
 
 export const PORT: number = parseInt(process.env.PORT || '3000');
 

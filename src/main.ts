@@ -1,7 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './module/app/app.module';
-import { API_PREFIX, PORT } from './shared/constant/global.constant';
+import {
+  API_PREFIX,
+  IS_DEVELOPMENT,
+  PORT,
+  VERSION,
+} from './shared/constant/global.constant';
 import { useContainer } from 'class-validator';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,10 +21,18 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization',
     credentials: true,
   });
-  console.log(PORT);
-  console.log('NODE_ENV:', process.env.NODE_ENV);
-  console.log('VERSION:', process.env.VERSION);
-  console.log('PORT:', process.env.PORT);
+
+  if (IS_DEVELOPMENT) {
+    const options = new DocumentBuilder()
+      .setTitle('Auth Service')
+      .setDescription('Auth Service API Description')
+      .setVersion(VERSION)
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, options);
+    SwaggerModule.setup('api', app, document);
+  }
 
   await app.listen(PORT, () => {
     console.log(`Auth service started listening: ${PORT}`);
