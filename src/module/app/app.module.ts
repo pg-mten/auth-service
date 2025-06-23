@@ -23,6 +23,7 @@ import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
     /// System Configuration
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     CustomPrismaModule.forRootAsync({
       isGlobal: true,
