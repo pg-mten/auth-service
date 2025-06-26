@@ -6,6 +6,7 @@ import { ExtendedPrismaConfigService } from '../prisma/prisma-config.extension';
 import { ConfigModule } from '@nestjs/config';
 import {
   APP_FILTER,
+  APP_GUARD,
   APP_INTERCEPTOR,
   APP_PIPE,
   HttpAdapterHost,
@@ -14,9 +15,11 @@ import {
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
 import { AllExceptionsFilter } from 'src/filter/all.exceptions.filter';
 import { PrismaClientKnownExceptionFilter } from 'src/filter/prisma-client-known.exception.filter';
-import { ResponseExceptionFilter } from 'src/filter/response.filter';
+import { ResponseExceptionFilter } from 'src/filter/response.exception.filter';
 import { InvalidRequestExceptionFilter } from 'src/filter/invalid-request.exception.filter';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
+import { AuthModule } from '../auth/auth.module';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -30,6 +33,8 @@ import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
       name: 'PrismaService',
       useClass: ExtendedPrismaConfigService,
     }),
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -70,6 +75,12 @@ import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
       inject: [Reflector],
     },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
+
+    /// GUARD
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}
