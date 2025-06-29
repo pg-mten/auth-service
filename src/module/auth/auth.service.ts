@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserService } from '../user/user.service';
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './dto/login.dto';
+import { AuthHelper } from 'src/shared/helper/auth.helper';
+import { AuthDto, AuthInfoDto } from './dto/auth.dto';
+import { plainToClass, instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -9,24 +13,34 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(
-    username: string,
-    password: string,
-  ): Promise<Omit<User, 'password'> | null> {
-    const user = await this.userService.findOne(username);
-    if (user && user.password === password) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
-      return result;
+  async validateUser(loginDto: LoginDto): Promise<AuthInfoDto | null> {
+    const { email, password } = loginDto;
+    try {
+      const user = await this.userService.findOneByEmailThrow(email);
+      const isPasswordVerify = await AuthHelper.verifyPassword(
+        user.passwordHash,
+        password,
+      );
+      if (user && isPasswordVerify) {
+        const authInfoDto = plainToClass(AuthInfoDto, user, {
+          excludeExtraneousValues: true,
+        });
+        return authInfoDto;
+      }
+      return null;
+    } catch (error) {
+      console.log(error);
+      return null;
     }
-    return null;
   }
 
-  login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    console.log({ payload });
+  async login(authInfoDto: AuthInfoDto): Promise<AuthDto> {
+    // const payload: TokenPayload = plainToClass(TokenPayload, authInfoDto);
+    const payload = instanceToPlain(authInfoDto);
+    const jwtToken = await this.jwtService.signAsync(payload);
     return {
-      access_token: this.jwtService.sign(payload),
-    };
+      token: jwtToken,
+      user: authInfoDto,
+    } as AuthDto;
   }
 }

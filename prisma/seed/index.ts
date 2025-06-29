@@ -1,8 +1,11 @@
 import { PrismaClient } from '@prisma/client';
+import { authSeeder } from './auth';
 
 const prisma = new PrismaClient();
 
-async function main() {}
+async function main() {
+  await authSeeder(prisma);
+}
 
 main()
   .catch((e) => {

@@ -14,3 +14,16 @@ datasource db {
   url      = env("DATABASE_URL")
   schemas  = ["auth"]
 }
+
+model User {
+  id           Int    @id @default(autoincrement())
+  email        String @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("auth")
+}

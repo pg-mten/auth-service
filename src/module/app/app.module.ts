@@ -19,7 +19,8 @@ import { ResponseExceptionFilter } from 'src/filter/response.exception.filter';
 import { InvalidRequestExceptionFilter } from 'src/filter/invalid-request.exception.filter';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { AuthModule } from '../auth/auth.module';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
     }),
 
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
@@ -46,13 +48,13 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
     },
 
     /// FILTER
-    {
-      provide: APP_FILTER, // Lowest priority
-      useFactory: (httpAdapterHost: HttpAdapterHost) => {
-        return new AllExceptionsFilter(httpAdapterHost);
-      },
-      inject: [HttpAdapterHost],
-    },
+    // {
+    //   provide: APP_FILTER, // Lowest priority
+    //   useFactory: (httpAdapterHost: HttpAdapterHost) => {
+    //     return new AllExceptionsFilter(httpAdapterHost);
+    //   },
+    //   inject: [HttpAdapterHost],
+    // },
     {
       provide: APP_FILTER,
       useClass: PrismaClientKnownExceptionFilter,
