@@ -22,6 +22,8 @@
     "prisma:seed": "npx prisma migrate reset --force --skip-seed --skip-generate && npx prisma db push && ts-node prisma/seed"
   },
   "dependencies": {
+    "@casl/ability": "^6.7.3",
+    "@casl/prisma": "^1.5.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",

@@ -17,13 +17,45 @@ datasource db {
 
 model User {
   id           Int    @id @default(autoincrement())
+  roleId       Int
+  role         Role   @relation(fields: [roleId], references: [id])
   email        String @unique
   passwordHash String
   firstName    String
   lastName     String
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Article   Article[]
+
+  @@schema("auth")
+}
+
+model Article {
+  id          Int     @id @default(autoincrement())
+  isPublished Boolean
+  authorId    Int
+  author      User    @relation(fields: [authorId], references: [id])
+
+  @@schema("auth")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  User      User[]
+
+  @@schema("auth")
+}
+
+model Permission {
+  id        Int    @id @default(autoincrement())
+  action    String
+  subject   String
+  condition Json
 
   @@schema("auth")
 }

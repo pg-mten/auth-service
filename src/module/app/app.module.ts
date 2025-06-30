@@ -21,6 +21,7 @@ import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UserModule } from '../user/user.module';
+import { CashModule } from '../casl/casl.module';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { UserModule } from '../user/user.module';
       name: 'PrismaService',
       useClass: ExtendedPrismaConfigService,
     }),
-
+    CashModule,
     AuthModule,
     UserModule,
   ],
