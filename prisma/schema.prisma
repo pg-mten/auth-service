@@ -17,33 +17,24 @@ datasource db {
 
 model User {
   id           Int    @id @default(autoincrement())
-  roleId       Int
-  role         Role   @relation(fields: [roleId], references: [id])
   email        String @unique
   passwordHash String
   firstName    String
   lastName     String
+  roleId       Int
+  role         Role   @relation(fields: [roleId], references: [id])
 
-<<<<<<< HEAD
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   Article        Article[]
   UserPermission UserPermission[]
-=======
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Article   Article[]
->>>>>>> 37b995eb6627f9c151a732bc5a7be07760b63761
 
   @@schema("auth")
 }
 
 model Article {
   id          Int     @id @default(autoincrement())
-<<<<<<< HEAD
   description String
-=======
->>>>>>> 37b995eb6627f9c151a732bc5a7be07760b63761
   isPublished Boolean
   authorId    Int
   author      User    @relation(fields: [authorId], references: [id])
@@ -62,7 +53,6 @@ model Role {
   @@schema("auth")
 }
 
-<<<<<<< HEAD
 model UserPermission {
   userId       Int
   user         User       @relation(fields: [userId], references: [id])
@@ -81,13 +71,6 @@ model Permission {
   condition      Json?
   reason         String?
   UserPermission UserPermission[]
-=======
-model Permission {
-  id        Int    @id @default(autoincrement())
-  action    String
-  subject   String
-  condition Json
->>>>>>> 37b995eb6627f9c151a732bc5a7be07760b63761
 
   @@schema("auth")
 }

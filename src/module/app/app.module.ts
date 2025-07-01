@@ -47,7 +47,6 @@ import { CashModule } from '../casl/casl.module';
 >>>>>>> 37b995eb6627f9c151a732bc5a7be07760b63761
     AuthModule,
     UserModule,
-    ArticleModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,13 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../../src/shared/helper/auth.helper';
-import { Role } from '../../../src/shared/constant/auth.constant';
 
 const users: {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  role: Role;
 }[] = [
   {
     email: 'le@gmail.com',
@@ -58,15 +56,7 @@ const users: {
 export async function userSeed(prisma: PrismaClient) {
   console.log('User Seeder');
 
-  const roles = await prisma.role.findMany();
-
-  for (const {
-    email,
-    password,
-    firstName,
-    lastName,
-    role: userRole,
-  } of users) {
+  for (const { email, password, firstName, lastName } of users) {
     const userCreated = await prisma.user.create({
       data: {
         email,

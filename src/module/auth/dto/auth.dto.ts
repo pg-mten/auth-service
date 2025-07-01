@@ -30,7 +30,11 @@ export class AuthInfoDto {
 
   @Expose()
   @ApiProperty()
-  role: string;
+  iat: number;
+
+  @Expose()
+  @ApiProperty()
+  exp: number;
 }
 
 export class AuthDto {
