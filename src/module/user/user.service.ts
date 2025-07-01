@@ -24,4 +24,11 @@ export class UserService {
       include: { role: true },
     });
   }
+
+  async findOneByAuthInfoThrow(authInfo: AuthInfoDto) {
+    return this.prisma.client.user.findUniqueOrThrow({
+      where: { email: authInfo.email },
+      include: { role: true },
+    });
+  }
 }

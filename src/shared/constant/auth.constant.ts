@@ -10,6 +10,7 @@ export const JWT = {
 };
 
 export enum Role {
+<<<<<<< HEAD
   admin = 'admin',
   user = 'user',
 }
@@ -20,4 +21,16 @@ export enum Action {
   read = 'read',
   update = 'update',
   delete = 'delete',
+=======
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
+export enum Action {
+  MANAGE = 'MANAGE',
+  CREATE = 'CREATE',
+  READ = 'READ',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+>>>>>>> 37b995eb6627f9c151a732bc5a7be07760b63761
 }
