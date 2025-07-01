@@ -17,13 +17,60 @@ datasource db {
 
 model User {
   id           Int    @id @default(autoincrement())
+  roleId       Int
+  role         Role   @relation(fields: [roleId], references: [id])
   email        String @unique
   passwordHash String
   firstName    String
   lastName     String
 
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  Article        Article[]
+  UserPermission UserPermission[]
+
+  @@schema("auth")
+}
+
+model Article {
+  id          Int     @id @default(autoincrement())
+  description String
+  isPublished Boolean
+  authorId    Int
+  author      User    @relation(fields: [authorId], references: [id])
+
+  @@schema("auth")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  User      User[]
+
+  @@schema("auth")
+}
+
+model UserPermission {
+  userId       Int
+  user         User       @relation(fields: [userId], references: [id])
+  permissionId Int
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([userId, permissionId])
+  @@schema("auth")
+}
+
+model Permission {
+  id             Int              @id @default(autoincrement())
+  inverted       Boolean          @default(false) // false = can , true = cannot
+  action         String
+  subject        String
+  condition      Json?
+  reason         String?
+  UserPermission UserPermission[]
 
   @@schema("auth")
 }

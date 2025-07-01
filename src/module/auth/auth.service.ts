@@ -25,6 +25,7 @@ export class AuthService {
         const authInfoDto = plainToClass(AuthInfoDto, user, {
           excludeExtraneousValues: true,
         });
+        authInfoDto.role = user.role.name;
         return authInfoDto;
       }
       return null;
@@ -35,6 +36,7 @@ export class AuthService {
   }
 
   async login(authInfoDto: AuthInfoDto): Promise<AuthDto> {
+    console.log({ authInfoDto });
     // const payload: TokenPayload = plainToClass(TokenPayload, authInfoDto);
     const payload = instanceToPlain(authInfoDto);
     const jwtToken = await this.jwtService.signAsync(payload);

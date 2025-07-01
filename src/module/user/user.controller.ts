@@ -3,6 +3,8 @@ import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { Role } from 'src/shared/constant/auth.constant';
 
 @Controller()
 export class UserController {
@@ -11,6 +13,13 @@ export class UserController {
   @ApiBearerAuth()
   @Get('/authinfo')
   profile(@CurrentUser() user: AuthInfoDto) {
+    return user;
+  }
+
+  @ApiBearerAuth()
+  @Roles(Role.admin)
+  @Get('/roles')
+  roles(@CurrentUser() user: AuthInfoDto) {
     return user;
   }
 }
