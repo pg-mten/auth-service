@@ -4,69 +4,115 @@ import { AuthHelper } from '../../src/shared/helper/auth.helper';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clean up
+  console.log('🧹 Clean existing data...');
   await prisma.permission.deleteMany();
   await prisma.user.deleteMany();
   await prisma.role.deleteMany();
 
-  // Create Roles
-  const adminRole = await prisma.role.create({ data: { name: 'admin' } });
-  const editorRole = await prisma.role.create({ data: { name: 'editor' } });
-  const viewerRole = await prisma.role.create({ data: { name: 'viewer' } });
+  console.log('🌱 Creating roles...');
+  const [superAdmin, adminRole, adminArticle, editor, viewer] =
+    await Promise.all([
+      prisma.role.create({ data: { name: 'super_admin' } }),
+      prisma.role.create({ data: { name: 'admin_role' } }),
+      prisma.role.create({ data: { name: 'admin_article' } }),
+      prisma.role.create({ data: { name: 'editor' } }),
+      prisma.role.create({ data: { name: 'viewer' } }),
+    ]);
 
-  // Create Permissions
+  console.log('🔐 Creating permissions...');
   await prisma.permission.createMany({
     data: [
-      // Admin - Full access
-      { action: 'manage', subject: 'all', role_id: adminRole.id },
+      // Super Admin
+      { action: 'manage', subject: 'all', role_id: superAdmin.id },
 
-      // Editor - CRUD Article (no delete)
-      { action: 'read', subject: 'Article', role_id: editorRole.id },
-      { action: 'create', subject: 'Article', role_id: editorRole.id },
-      { action: 'update', subject: 'Article', role_id: editorRole.id },
+      // Admin Role
+      { action: 'read', subject: 'Role', role_id: adminRole.id },
+      { action: 'create', subject: 'Role', role_id: adminRole.id },
+      { action: 'update', subject: 'Role', role_id: adminRole.id },
+      { action: 'delete', subject: 'Role', role_id: adminRole.id },
+      { action: 'read', subject: 'Permission', role_id: adminRole.id },
+      { action: 'create', subject: 'Permission', role_id: adminRole.id },
+      { action: 'update', subject: 'Permission', role_id: adminRole.id },
+      { action: 'delete', subject: 'Permission', role_id: adminRole.id },
 
-      // Viewer - only read Article with condition: created_by == user.id
+      // Admin Article
+      { action: 'read', subject: 'Article', role_id: adminArticle.id },
+      { action: 'create', subject: 'Article', role_id: adminArticle.id },
+      { action: 'update', subject: 'Article', role_id: adminArticle.id },
+      { action: 'delete', subject: 'Article', role_id: adminArticle.id },
+
+      // Editor (own articles)
       {
         action: 'read',
         subject: 'Article',
-        role_id: viewerRole.id,
-        conditions: {
-          created_by: '$userId', // this will be replaced dynamically
-        },
+        role_id: editor.id,
+        conditions: { created_by: '$userId' },
+      },
+      {
+        action: 'create',
+        subject: 'Article',
+        role_id: editor.id,
+        conditions: { created_by: '$userId' },
+      },
+      {
+        action: 'update',
+        subject: 'Article',
+        role_id: editor.id,
+        conditions: { created_by: '$userId' },
+      },
+
+      // Viewer (read only own article)
+      {
+        action: 'read',
+        subject: 'Article',
+        role_id: viewer.id,
+        conditions: { created_by: '$userId' },
       },
     ],
   });
 
-  // Create Users
+  console.log('👤 Creating users...');
   await prisma.user.createMany({
     data: [
       {
-        username: 'admin_user',
-        email: 'admin@example.com',
-        password: await AuthHelper.hashPassword('password123'), // hash properly in real use
+        username: 'superadmin',
+        email: 'superadmin@example.com',
+        password: await AuthHelper.hashPassword('super123'),
+        role_id: superAdmin.id,
+      },
+      {
+        username: 'admin_role_user',
+        email: 'adminrole@example.com',
+        password: await AuthHelper.hashPassword('adminrole123'),
         role_id: adminRole.id,
+      },
+      {
+        username: 'admin_article_user',
+        email: 'adminarticle@example.com',
+        password: await AuthHelper.hashPassword('adminarticle123'),
+        role_id: adminArticle.id,
       },
       {
         username: 'editor_user',
         email: 'editor@example.com',
-        password: await AuthHelper.hashPassword('password123'), // hash properly in real use
-        role_id: editorRole.id,
+        password: await AuthHelper.hashPassword('editor123'),
+        role_id: editor.id,
       },
       {
         username: 'viewer_user',
         email: 'viewer@example.com',
-        password: await AuthHelper.hashPassword('password123'), // hash properly in real use
-        role_id: viewerRole.id,
+        password: await AuthHelper.hashPassword('viewer123'),
+        role_id: viewer.id,
       },
     ],
   });
 
-  console.log('✅ Seeder executed successfully!');
+  console.log('✅ Seeder completed!');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Seeder error:', e);
+    console.error('❌ Error while seeding:', e);
     process.exit(1);
   })
   .finally(() => {
