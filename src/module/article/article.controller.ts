@@ -1,29 +1,33 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import { AuthInfoDto } from '../auth/dto/auth.dto';
+// src/article/article.controller.ts
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { User } from '@prisma/client';
+import { PoliciesGuard } from '../casl/policies.guard';
+import { CheckPolicies } from '../casl/policy.decorator';
+import { AppAbility } from '../casl/casl-ability.factory';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { CurrentUser } from '../auth/decorator/current-user.decorator';
 
-@Controller('/article')
+@ApiTags('Articles')
+@ApiBearerAuth()
+@Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
-  @ApiBearerAuth()
-  @Get('')
-  findMany(@CurrentUser() authInfo: AuthInfoDto) {
-    // return authInfo;
-    return this.articleService.findManyThrow(authInfo);
+  @Get()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('read', 'Article'))
+  @ApiOperation({ summary: 'Get all articles by current user' })
+  async findAll(@CurrentUser() user: User) {
+    return await this.articleService.findAllByUser(user.id);
   }
 
-  @ApiBearerAuth()
-  @Post('')
-  update(@CurrentUser() authInfo: AuthInfoDto) {
-    return this.articleService.update(authInfo);
-  }
-
-  @ApiBearerAuth()
-  @Get('ss')
-  findOne(@CurrentUser() authInfo: AuthInfoDto) {
-    return this.articleService.findOne(authInfo);
+  @Post()
+  @UseGuards(PoliciesGuard)
+  @CheckPolicies((ability: AppAbility) => ability.can('create', 'Article'))
+  @ApiOperation({ summary: 'Create a new article' })
+  async create(@CurrentUser() user: User, @Body() dto: CreateArticleDto) {
+    return await this.articleService.create(user.id, dto.name);
   }
 }

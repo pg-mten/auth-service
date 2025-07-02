@@ -15,62 +15,60 @@ datasource db {
   schemas  = ["auth"]
 }
 
-model User {
-  id           Int    @id @default(autoincrement())
-  roleId       Int
-  role         Role   @relation(fields: [roleId], references: [id])
-  email        String @unique
-  passwordHash String
-  firstName    String
-  lastName     String
-
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  Article        Article[]
-  UserPermission UserPermission[]
-
-  @@schema("auth")
-}
-
-model Article {
-  id          Int     @id @default(autoincrement())
-  description String
-  isPublished Boolean
-  authorId    Int
-  author      User    @relation(fields: [authorId], references: [id])
-
-  @@schema("auth")
-}
-
 model Role {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id         Int       @unique @default(autoincrement())
+  name       String    @db.VarChar()
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  User      User[]
+  Permission Permission[]
+  User       User[]
 
-  @@schema("auth")
-}
-
-model UserPermission {
-  userId       Int
-  user         User       @relation(fields: [userId], references: [id])
-  permissionId Int
-  permission   Permission @relation(fields: [permissionId], references: [id])
-
-  @@id([userId, permissionId])
+  @@map("roles")
   @@schema("auth")
 }
 
 model Permission {
-  id             Int              @id @default(autoincrement())
-  inverted       Boolean          @default(false) // false = can , true = cannot
-  action         String
-  subject        String
-  condition      Json?
-  reason         String?
-  UserPermission UserPermission[]
+  id         Int     @unique @default(autoincrement())
+  role       Role    @relation(fields: [role_id], references: [id])
+  role_id    Int     @db.Integer()
+  action     String  @db.VarChar()
+  subject    String  @db.VarChar()
+  inverted   Boolean @default(false)
+  conditions Json?   @db.JsonB()
+  reason     String? @db.Text()
 
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
+
+  @@map("permissions")
+  @@schema("auth")
+}
+
+model User {
+  id       Int    @unique @default(autoincrement())
+  username String @unique
+  email    String @unique @db.VarChar(255)
+  password String
+
+  role    Role @relation(fields: [role_id], references: [id])
+  role_id Int  @db.Integer()
+
+  Article Article[] @relation(name: "created_user")
+
+  @@map("users")
+  @@schema("auth")
+}
+
+model Article {
+  id   Int    @unique @default(autoincrement())
+  name String @db.VarChar()
+
+  created_user User @relation(name: "created_user", fields: [created_by], references: [id])
+  created_by   Int  @db.Integer()
+
+  @@map("articles")
   @@schema("auth")
 }

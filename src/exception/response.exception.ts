@@ -17,7 +17,6 @@ export class ResponseException extends Error {
     exception: HttpException,
     error?: Record<string, unknown> | null,
   ) {
-    console.log({ exception });
     const responseDto = new ResponseDto({
       statusCode: exception.getStatus(),
       status: ResponseStatus.ERROR,

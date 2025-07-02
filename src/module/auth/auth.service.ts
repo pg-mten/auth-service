@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
@@ -17,17 +17,20 @@ export class AuthService {
     const { email, password } = loginDto;
     try {
       const user = await this.userService.findOneByEmailThrow(email);
-      const isPasswordVerify = await AuthHelper.verifyPassword(
-        user.passwordHash,
-        password,
-      );
-      if (user && isPasswordVerify) {
-        const authInfoDto = plainToClass(AuthInfoDto, user, {
-          excludeExtraneousValues: true,
-        });
-        authInfoDto.role = user.role.name;
-        return authInfoDto;
+      if (user) {
+        const isPasswordVerify = await AuthHelper.verifyPassword(
+          user.password,
+          password,
+        );
+        if (user && isPasswordVerify) {
+          const authInfoDto = plainToClass(AuthInfoDto, user, {
+            excludeExtraneousValues: true,
+          });
+          authInfoDto.role = user.role.name;
+          return authInfoDto;
+        }
       }
+
       return null;
     } catch (error) {
       console.log(error);

@@ -1,128 +1,61 @@
 import {
-  AbilityBuilder,
-  ExtractSubjectType,
   PureAbility,
-  SubjectRawRule,
+  RawRuleOf,
+  ForcedSubject,
+  AbilityTuple,
+  CreateAbility,
+  buildMongoQueryMatcher,
 } from '@casl/ability';
-import { createPrismaAbility, PrismaQuery, Subjects } from '@casl/prisma';
-import { Article, User, Permission } from '@prisma/client';
-import { Inject, Injectable } from '@nestjs/common';
-import { AuthInfoDto } from '../auth/dto/auth.dto';
-import { ExtendedPrismaClient } from '../prisma/prisma.extension';
-import { CustomPrismaService } from 'nestjs-prisma';
+import { Injectable } from '@nestjs/common';
+import { Permission } from '@prisma/client';
 
-type MySubjects = Subjects<{
-  User: User;
-  Article: Article;
-}>;
+// 🎯 Step 1: Tentukan actions dan subjects
+export const actions = [
+  'manage',
+  'create',
+  'read',
+  'update',
+  'delete',
+] as const;
+export const subjects = ['Article', 'all'] as const;
 
-export type AppSubjects = 'all' | MySubjects;
+// 🎯 Step 2: Define type tuple
+export type AppAction = (typeof actions)[number];
+export type AppSubject = (typeof subjects)[number];
 
-export type AppAbility = PureAbility<[string, AppSubjects], PrismaQuery>;
+// 🎯 Step 3: Ability tuple untuk definisi CASL
+export type AppAbilities = AbilityTuple<
+  AppAction,
+  AppSubject | ForcedSubject<Exclude<AppSubject, 'all'>>
+>;
+
+// 🎯 Step 4: Instance dari ability
+export type AppAbility = PureAbility<AppAbilities>;
+
+// 🎯 Step 5: Create function dengan type helper
+export const createAbility: CreateAbility<AppAbility> = (rules) =>
+  new PureAbility<AppAbilities>(rules, {
+    conditionsMatcher: buildMongoQueryMatcher(),
+  });
 
 @Injectable()
 export class CaslAbilityFactory {
-  constructor(
-    @Inject('PrismaService')
-    private readonly prisma: CustomPrismaService<ExtendedPrismaClient>,
-  ) {}
-  async createForUser(authInfo: AuthInfoDto, subject: string, actions: string) {
-    console.log('CaslAbilityFactory.createForUser');
-    const { can, rules, build } = new AbilityBuilder<AppAbility>(
-      createPrismaAbility,
-    );
-
-    const userPermissions = await this.prisma.client.userPermission.findMany({
-      where: {
-        userId: authInfo.id,
-        permission: {
-          subject: subject,
-          action: actions,
-        },
-      },
-      include: { permission: true },
-    });
-
-    console.log({ userPermissions });
-
-    const permissions: SubjectRawRule<
-      string,
-      ExtractSubjectType<AppSubjects>,
-      PrismaQuery
-    >[] = userPermissions.map((userPermission) => {
-      const permission = userPermission.permission;
-      const rule: SubjectRawRule<
-        string,
-        ExtractSubjectType<AppSubjects>,
-        PrismaQuery
-      > = {
-        action: permission.action,
-        subject: permission.subject as ExtractSubjectType<AppSubjects>,
-        // conditions: this.parseCondition(permission, authInfo),
-        conditions: this.parseCondition(permission, authInfo),
-        // { authorId: 3 },
-        // this.parseCondition(permission, authInfo),
-        // conditions: !permission.condition
-        //   ? undefined
-        //   : Object(permission.condition),
-        inverted: permission.inverted,
-        reason: permission.reason ?? undefined,
-      };
-      console.log(rule);
-      return rule;
-    });
-
-    // rules.push(...permissions);
-    can('read', 'Article');
-    can('update', 'Article', { authorId: 1 });
-    return build();
-  }
-
-  private subject(data: MySubjects): string {
-    return data.valueOf() as string;
-  }
-
-  private parseCondition(
-    permission: Permission,
-    authInfo: AuthInfoDto,
-  ): PrismaQuery | undefined {
-    // console.log('CaslAbilityFactory.parseCondition');
-    // console.log({ permission });
-    if (!permission.condition) return undefined;
-    const obj = permission.condition as Record<string, any>;
-    if (permission.subject === this.subject('Article')) {
-      // console.log({ obj });
-      // console.log(Object.keys(obj));
-
-      if (Object.keys(obj).includes('authorId')) {
-        const ooo: PrismaQuery = { authorId: authInfo.id };
-        return ooo;
-        // return { authorId: authInfo.id } as PrismaQuery;
-        // return plainToClass(PrismaQuery, { authorId: authInfo.id });
+  createForPermissions(permissions: Permission[], userId?: number): AppAbility {
+    const rules: RawRuleOf<AppAbility>[] = permissions.map((perm) => {
+      let conditions = perm.conditions;
+      if (conditions && typeof conditions === 'object') {
+        const str = JSON.stringify(conditions);
+        conditions = JSON.parse(str.replaceAll('"$userId"', `${userId}`));
       }
-    }
-    return obj as PrismaQuery;
+      return {
+        action: perm.action as AppAction,
+        subject: perm.subject as AppSubject,
+        inverted: perm.inverted,
+        reason: perm.reason ?? undefined,
+        conditions: conditions ?? undefined,
+      };
+    });
+
+    return createAbility(rules);
   }
 }
-
-// @Injectable()
-// export class CaslAbilityFactory {
-//   createForUser(user: User & { role: Role }) {
-//     const { can, cannot, build } = new AbilityBuilder<AppAbility>(
-//       createPrismaAbility,
-//     );
-
-//     if (user.role.name === RoleEnum.ADMIN.toString()) {
-//       // can(Action.MANAGE, 'User'); // read-write access to everything
-//       can(Action.MANAGE, 'all', 'all');
-//     } else {
-//       // can(Action.READ, 'Article');
-//       can(Action.READ, 'Article');
-//     }
-
-//     can(Action.UPDATE, 'Article', { authorId: user.id });
-//     cannot(Action.DELETE, 'Article', { isPublished: true });
-
-//     return build();
-//   }
-// }

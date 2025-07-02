@@ -4,7 +4,7 @@ import { Role } from 'src/shared/constant/auth.constant';
 import { ROLES_KEY } from '../decorator/roles.decorator';
 import { Request } from 'express';
 import { AuthInfoDto } from '../dto/auth.dto';
-import { UserService } from 'src/module/user/user.service';
+import { UserService } from 'src/module/users/user.service';
 
 export class RolesGuard implements CanActivate {
   constructor(
