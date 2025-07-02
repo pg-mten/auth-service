@@ -19,6 +19,8 @@ import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UserModule } from '../users/user.module';
 import { ArticleModule } from '../article/article.module';
+import { PermissionsModule } from '../permissions/permissions.module';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { ArticleModule } from '../article/article.module';
     UserModule,
     ArticleModule,
     PrismaModule,
+    PermissionsModule,
+    RolesModule,
     /// System Configuration
     ConfigModule.forRoot({
       isGlobal: true,

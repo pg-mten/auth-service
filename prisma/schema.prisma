@@ -31,8 +31,8 @@ model Role {
 
 model Permission {
   id         Int     @unique @default(autoincrement())
-  role       Role    @relation(fields: [role_id], references: [id])
-  role_id    Int     @db.Integer()
+  role       Role?    @relation(fields: [role_id], references: [id])
+  role_id    Int?     @db.Integer()
   action     String  @db.VarChar()
   subject    String  @db.VarChar()
   inverted   Boolean @default(false)

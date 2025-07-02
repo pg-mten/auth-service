@@ -17,7 +17,7 @@ export const actions = [
   'update',
   'delete',
 ] as const;
-export const subjects = ['Article', 'all'] as const;
+export const subjects = ['Article', 'Permission', 'Role', 'all'] as const;
 
 // 🎯 Step 2: Define type tuple
 export type AppAction = (typeof actions)[number];
