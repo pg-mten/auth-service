@@ -7,24 +7,31 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 export class PermissionsService {
   constructor(private prisma: PrismaService) {}
 
-  create(dto: CreatePermissionDto) {
-    return this.prisma.permission.create({ data: dto });
+  create(data: CreatePermissionDto) {
+    return this.prisma.permission.create({ data });
   }
 
   findAll() {
-    return this.prisma.permission.findMany({ include: { role: true } });
+    return this.prisma.permission.findMany({
+      where: { deleted_at: null },
+    });
   }
 
   findOne(id: number) {
     return this.prisma.permission.findUnique({ where: { id } });
   }
 
-  update(id: number, dto: UpdatePermissionDto) {
-    return this.prisma.permission.update({ where: { id }, data: dto });
+  update(id: number, data: UpdatePermissionDto) {
+    return this.prisma.permission.update({ where: { id }, data });
   }
 
-  remove(id: number) {
-    return this.prisma.permission.delete({ where: { id } });
+  softDelete(id: number) {
+    return this.prisma.permission.update({
+      where: { id },
+      data: {
+        deleted_at: new Date(),
+      },
+    });
   }
 
   async assignToRole(permissionId: number, roleId: number) {

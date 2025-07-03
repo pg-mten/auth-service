@@ -11,8 +11,11 @@ export class RolesService {
     return this.prisma.role.create({ data: dto });
   }
 
-  findAll() {
-    return this.prisma.role.findMany({ include: { Permission: true } });
+  async findAll() {
+    const data = await this.prisma.role.findMany({
+      include: { Permission: true },
+    });
+    return data;
   }
 
   findOne(id: number) {

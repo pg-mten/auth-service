@@ -11,8 +11,6 @@ import { InvalidRequestException } from '../exception/invalid-request.exception'
 @Catch(InvalidRequestException)
 export class InvalidRequestExceptionFilter implements ExceptionFilter {
   catch(exception: InvalidRequestException, host: ArgumentsHost) {
-    console.log('InvalidRequestExceptionFilter');
-
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const responseDto = exception.getResponseDto();

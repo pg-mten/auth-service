@@ -10,7 +10,7 @@ import {
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('Roles')
@@ -24,11 +24,13 @@ export class RolesController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all articles by current user' })
   findAll() {
+    console.log('controller');
     return this.rolesService.findAll();
   }
 
-  @Get(':id')
+  @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.rolesService.findOne(+id);
   }

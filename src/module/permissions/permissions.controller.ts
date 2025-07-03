@@ -41,7 +41,7 @@ export class PermissionsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.permissionsService.remove(+id);
+    return this.permissionsService.softDelete(+id);
   }
 
   @Post(':id/assign-role/:roleId')

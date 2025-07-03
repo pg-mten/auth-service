@@ -1,7 +1,6 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PrismaModule } from 'nestjs-prisma';
 import { ConfigModule } from '@nestjs/config';
 import {
   APP_FILTER,
@@ -18,18 +17,23 @@ import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { AuthModule } from '../auth/auth.module';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UserModule } from '../users/user.module';
-import { ArticleModule } from '../article/article.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
+import { PrismaUserInterceptor } from '../../interceptor/prisma-user.interceptor';
+import { PrismaService } from '../prisma/prisma.service';
+import { PrismaModule } from 'nestjs-prisma';
+import { AgentDetailModule } from '../agentDetail/agent-detail.module';
+import { MerchantDetailModule } from '../merchantDetail/merchant-detail.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
-    ArticleModule,
     PrismaModule,
     PermissionsModule,
     RolesModule,
+    AgentDetailModule,
+    MerchantDetailModule,
     /// System Configuration
     ConfigModule.forRoot({
       isGlobal: true,
@@ -39,6 +43,7 @@ import { RolesModule } from '../roles/roles.module';
   controllers: [AppController],
   providers: [
     AppService,
+    PrismaService,
     /// PIPE
     {
       provide: APP_PIPE,
@@ -66,7 +71,11 @@ import { RolesModule } from '../roles/roles.module';
       inject: [Reflector],
     },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
-
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (prisma: PrismaService) => new PrismaUserInterceptor(prisma),
+      inject: [PrismaService],
+    },
     /// GUARD
     {
       provide: APP_GUARD,

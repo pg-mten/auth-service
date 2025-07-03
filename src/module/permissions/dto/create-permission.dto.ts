@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsJSON,
   IsInt,
+  IsArray,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -44,6 +45,12 @@ export class CreatePermissionDto {
   @IsOptional()
   @IsJSON()
   conditions?: object;
+
+  @ApiPropertyOptional({ example: ['title', 'summary'], type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  field?: string[];
 
   @ApiPropertyOptional({
     example: 'Can only read own articles',

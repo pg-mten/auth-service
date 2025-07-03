@@ -11,14 +11,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiBearerAuth()
-  @Get('/authinfo')
+  @Get('/user/authinfo')
   profile(@CurrentUser() user: AuthInfoDto) {
     return user;
   }
 
   @ApiBearerAuth()
   @Roles(Role.admin)
-  @Get('/roles')
+  @Get('/user/role')
   roles(@CurrentUser() user: AuthInfoDto) {
     return user;
   }

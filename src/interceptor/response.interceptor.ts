@@ -12,9 +12,7 @@ export class ResponseInterceptor<T>
   ): Observable<ResponseDto<T>> | Promise<Observable<ResponseDto<T>>> {
     return next.handle().pipe(
       map((response) => {
-        console.log('ResponseInterceptor');
         if (response instanceof ResponseDto) {
-          console.log('LeRucco response instanceof ResponseDto');
           return response;
         }
         if (response instanceof Page) {

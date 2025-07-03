@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsJSON,
   IsInt,
+  IsArray,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -32,6 +33,12 @@ export class UpdatePermissionDto {
   @IsOptional()
   @IsJSON()
   conditions?: object;
+
+  @ApiPropertyOptional({ example: ['title', 'summary'], type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  field?: string[];
 
   @ApiPropertyOptional({ example: 'Allows editing only own content' })
   @IsOptional()

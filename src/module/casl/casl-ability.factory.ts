@@ -17,7 +17,13 @@ export const actions = [
   'update',
   'delete',
 ] as const;
-export const subjects = ['Article', 'Permission', 'Role', 'all'] as const;
+export const subjects = [
+  'Permission',
+  'Role',
+  'AgentDetail',
+  'MerchantDetail',
+  'all',
+] as const;
 
 // 🎯 Step 2: Define type tuple
 export type AppAction = (typeof actions)[number];
@@ -43,14 +49,26 @@ export class CaslAbilityFactory {
   createForPermissions(permissions: Permission[], userId?: number): AppAbility {
     const rules: RawRuleOf<AppAbility>[] = permissions.map((perm) => {
       let conditions = perm.conditions;
+      console.log(perm.conditions);
       if (conditions && typeof conditions === 'object') {
-        const str = JSON.stringify(conditions);
-        conditions = JSON.parse(str.replaceAll('"$userId"', `${userId}`));
+        try {
+          const str = JSON.stringify(conditions);
+          conditions = JSON.parse(
+            str.replace(/"\$userId"/g, JSON.stringify(userId)),
+          );
+        } catch (err) {
+          console.error(
+            'Failed to parse permission conditions:',
+            perm.conditions,
+            err,
+          );
+        }
       }
       return {
         action: perm.action as AppAction,
         subject: perm.subject as AppSubject,
         inverted: perm.inverted,
+        fields: perm.field?.length ? perm.field : undefined,
         reason: perm.reason ?? undefined,
         conditions: conditions ?? undefined,
       };

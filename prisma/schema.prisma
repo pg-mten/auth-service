@@ -16,10 +16,13 @@ datasource db {
 }
 
 model Role {
-  id         Int       @unique @default(autoincrement())
-  name       String    @db.VarChar()
+  id   Int    @unique @default(autoincrement())
+  name String @db.VarChar()
+
   created_at DateTime  @default(now())
+  created_by Int?      @db.Integer()
   updated_at DateTime? @updatedAt()
+  updated_by Int?      @db.Integer()
   deleted_at DateTime? @db.Timestamp()
 
   Permission Permission[]
@@ -30,17 +33,20 @@ model Role {
 }
 
 model Permission {
-  id         Int     @unique @default(autoincrement())
+  id         Int      @unique @default(autoincrement())
   role       Role?    @relation(fields: [role_id], references: [id])
   role_id    Int?     @db.Integer()
-  action     String  @db.VarChar()
-  subject    String  @db.VarChar()
-  inverted   Boolean @default(false)
-  conditions Json?   @db.JsonB()
-  reason     String? @db.Text()
+  action     String   @db.VarChar()
+  subject    String   @db.VarChar()
+  inverted   Boolean  @default(false)
+  field      String[] @db.VarChar()
+  conditions Json?    @db.JsonB()
+  reason     String?  @db.Text()
 
   created_at DateTime  @default(now())
+  created_by Int?      @db.Integer()
   updated_at DateTime? @updatedAt()
+  updated_by Int?      @db.Integer()
   deleted_at DateTime? @db.Timestamp()
 
   @@map("permissions")
@@ -56,19 +62,82 @@ model User {
   role    Role @relation(fields: [role_id], references: [id])
   role_id Int  @db.Integer()
 
-  Article Article[] @relation(name: "created_user")
+  agentDetail AgentDetail?
+
+  merchantDetail MerchantDetail?
+
+  created_at DateTime  @default(now())
+  created_by Int?      @db.Integer()
+  updated_at DateTime? @updatedAt()
+  updated_by Int?      @db.Integer()
+  deleted_at DateTime? @db.Timestamp()
 
   @@map("users")
   @@schema("auth")
 }
 
-model Article {
-  id   Int    @unique @default(autoincrement())
-  name String @db.VarChar()
+model AgentDetail {
+  id                  Int    @id @default(autoincrement())
+  fullname            String
+  address             String
+  phone               String
+  bank_name           String @db.VarChar(100) // contoh: "BCA", "BRI"
+  account_number      String @db.VarChar(50)
+  account_holder_name String @db.VarChar(100)
 
-  created_user User @relation(name: "created_user", fields: [created_by], references: [id])
-  created_by   Int  @db.Integer()
+  created_at DateTime  @default(now())
+  created_by Int?      @db.Integer()
+  updated_at DateTime? @updatedAt()
+  updated_by Int?      @db.Integer()
+  deleted_at DateTime? @db.Timestamp()
 
-  @@map("articles")
+  user      User            @relation(fields: [user_id], references: [id])
+  user_id   Int             @unique // ✅ satu agent detail hanya milik satu user
+  merchants AgentMerchant[]
+
+  @@map("agentDetail")
+  @@schema("auth")
+}
+
+model MerchantDetail {
+  id                  Int    @id @default(autoincrement())
+  businessName        String
+  npwp                String
+  address             String
+  bank_name           String @db.VarChar(100)
+  account_number      String @db.VarChar(50)
+  account_holder_name String @db.VarChar(100)
+
+  created_at DateTime  @default(now())
+  created_by Int?      @db.Integer()
+  updated_at DateTime? @updatedAt()
+  updated_by Int?      @db.Integer()
+  deleted_at DateTime? @db.Timestamp()
+
+  users   User            @relation(fields: [user_id], references: [id])
+  user_id Int             @unique
+  agents  AgentMerchant[]
+
+  @@map("merchantDetail")
+  @@schema("auth")
+}
+
+model AgentMerchant {
+  agent_id    Int
+  merchant_id Int
+
+  agent    AgentDetail    @relation(fields: [agent_id], references: [id])
+  merchant MerchantDetail @relation(fields: [merchant_id], references: [id])
+
+  assigned_at DateTime @default(now())
+
+  created_at DateTime  @default(now())
+  created_by Int?      @db.Integer()
+  updated_at DateTime? @updatedAt()
+  updated_by Int?      @db.Integer()
+  deleted_at DateTime? @db.Timestamp()
+
+  @@id([agent_id, merchant_id]) // composite primary key
+  @@map("agent_merchants")
   @@schema("auth")
 }

@@ -1,22 +1,26 @@
-// src/casl/policies.guard.ts
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  ForbiddenException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { CaslAbilityFactory } from './casl-ability.factory';
-import { PrismaService } from '../prisma/prisma.service';
-import { CHECK_POLICIES_KEY, PolicyHandler } from './policy.decorator';
+import { CaslCacheService } from './casl-cache.service';
+import { AppAbility } from './casl-ability.factory';
+import { CHECK_POLICIES_KEY } from './policy.decorator';
+import { PolicyHandler } from './types/policy-handler.type';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private caslFactory: CaslAbilityFactory,
-    private prisma: PrismaService,
+    private caslCache: CaslCacheService,
   ) {}
+
+  private execPolicyHandler(
+    handler: PolicyHandler,
+    ability: AppAbility,
+  ): boolean {
+    if (typeof handler === 'function') {
+      return handler(ability);
+    }
+    return handler.handle(ability);
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const handlers =
@@ -25,31 +29,14 @@ export class PoliciesGuard implements CanActivate {
         context.getHandler(),
       ) || [];
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    if (handlers.length === 0) return true;
 
-    const userWithRole = await this.prisma.user.findUnique({
-      where: { id: user.id },
-      include: {
-        role: {
-          include: { Permission: true },
-        },
-      },
-    });
+    const req = context.switchToHttp().getRequest();
+    const user = req.user;
+    const ability = await this.caslCache.getAbility(user.id);
 
-    const ability = this.caslFactory.createForPermissions(
-      userWithRole?.role?.Permission || [],
-      userWithRole?.id,
+    return handlers.every((handler) =>
+      this.execPolicyHandler(handler, ability),
     );
-
-    for (const handler of handlers) {
-      if (!handler(ability)) {
-        throw new ForbiddenException(
-          'You are not allowed to perform this action',
-        );
-      }
-    }
-
-    return true;
   }
 }

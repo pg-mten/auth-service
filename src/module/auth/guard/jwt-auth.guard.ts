@@ -22,6 +22,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
+    console.log(isPublic);
     if (isPublic) return true;
     return super.canActivate(context);
   }
@@ -33,8 +34,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     context: ExecutionContext,
     status?: any,
   ): TUser {
-    console.log('JwtAuthGuard.handleRequest');
-    console.log({ err, user, info, context, status });
+    // console.log({ err, user, info, context, status });
     if (err || !user) {
       throw ResponseException.fromHttpExecption(new UnauthorizedException());
     }
