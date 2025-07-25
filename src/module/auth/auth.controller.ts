@@ -14,6 +14,7 @@ export class AuthController {
   @Public()
   @Get('/hello')
   hello(): string {
+    console.log('HELLO');
     return 'hello';
   }
 

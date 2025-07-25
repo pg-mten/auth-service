@@ -15,10 +15,10 @@ async function bootstrap() {
   app.setGlobalPrefix(API_PREFIX);
   useContainer(app.select(AppModule), { fallbackOnErrors: true }); // class-validator ngikut DI Nest
 
+  // TODO jangan sampai production, origin set true demi development dan testing
   app.enableCors({
-    origin: '*',
+    origin: true,
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
     credentials: true,
   });
 

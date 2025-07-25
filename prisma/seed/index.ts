@@ -21,7 +21,7 @@ async function main() {
     agentRole,
     merchantRole,
   ] = await prisma.$transaction([
-    prisma.role.create({ data: { name: 'super_admin' } }),
+    prisma.role.create({ data: { name: 'admin' } }),
     prisma.role.create({ data: { name: 'admin_role_permission' } }),
     prisma.role.create({ data: { name: 'admin_agent' } }),
     prisma.role.create({ data: { name: 'admin_merchant' } }),
