@@ -7,13 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { JWT } from 'src/shared/constant/auth.constant';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthController } from './auth.controller';
-import { AuthInfoDto } from './dto/auth.dto';
-
-declare module 'express-serve-static-core' {
-  interface Request {
-    user: AuthInfoDto;
-  }
-}
 
 @Module({
   controllers: [AuthController],

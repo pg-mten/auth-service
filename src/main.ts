@@ -2,15 +2,21 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './module/app/app.module';
 import {
   API_PREFIX,
+  APP_NAME,
   IS_DEVELOPMENT,
   PORT,
   VERSION,
 } from './shared/constant/global.constant';
 import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { WinstonModule } from 'nest-winston';
+import { logger } from './shared/constant/logger.constant';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({ instance: logger }),
+    bufferLogs: true,
+  });
 
   app.setGlobalPrefix(API_PREFIX);
   useContainer(app.select(AppModule), { fallbackOnErrors: true }); // class-validator ngikut DI Nest
@@ -24,14 +30,14 @@ async function bootstrap() {
 
   if (IS_DEVELOPMENT) {
     const options = new DocumentBuilder()
-      .setTitle('Auth Service')
-      .setDescription('Auth Service API Description')
+      .setTitle(`${APP_NAME} Service`)
+      .setDescription(`${APP_NAME} Service API Description`)
       .setVersion(VERSION)
       .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup(API_PREFIX, app, document);
   }
 
   await app.listen(PORT, () => {
