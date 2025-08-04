@@ -15,6 +15,7 @@ import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
 import { PoliciesGuard } from '../casl/policies.guard';
+import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
 
 @ApiTags('Agent Detail')
 @ApiBearerAuth()
@@ -41,7 +42,7 @@ export class AgentDetailController {
     return this.service.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'AgentDetail'))
   update(
     @Param('id') id: string,
@@ -50,4 +51,13 @@ export class AgentDetailController {
   ) {
     return this.service.update(+id, userId, dto);
   }
+
+  @Patch('update-balance/:id')
+    updateBalance(
+      @Param('id') id: string,
+      @Body() dto: UpdateBalanceAgentDto,
+      @CurrentUser('id') userId: number,
+    ) {
+      return this.service.updateBalance(+id, userId, dto);
+    }
 }

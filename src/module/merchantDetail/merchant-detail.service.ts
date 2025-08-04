@@ -46,4 +46,13 @@ export class MerchantDetailService {
       },
     });
   }
+
+  async updateBalance(id: number, userId: number, balance: number) {
+    await this.prisma.merchantDetail.update({
+      where: { id },
+      data: {
+        balance,
+      },
+    });
+  }
 }

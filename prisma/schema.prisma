@@ -84,6 +84,7 @@ model AgentDetail {
   bank_name           String @db.VarChar(100) // contoh: "BCA", "BRI"
   account_number      String @db.VarChar(50)
   account_holder_name String @db.VarChar(100)
+  balance             Int?   @default(0)
 
   created_at DateTime  @default(now())
   created_by Int?      @db.Integer()
@@ -107,6 +108,7 @@ model MerchantDetail {
   bank_name           String @db.VarChar(100)
   account_number      String @db.VarChar(50)
   account_holder_name String @db.VarChar(100)
+  balance             Int?   @default(0)
 
   created_at DateTime  @default(now())
   created_by Int?      @db.Integer()
