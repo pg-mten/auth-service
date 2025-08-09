@@ -21,8 +21,8 @@ import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
 import { PrismaUserInterceptor } from '../../interceptor/prisma-user.interceptor';
 import { PrismaService } from '../prisma/prisma.service';
-import { AgentDetailModule } from '../agentDetail/agent-detail.module';
-import { MerchantDetailModule } from '../merchantDetail/merchant-detail.module';
+import { AgentDetailModule } from '../agent-detail/agent-detail.module';
+import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
