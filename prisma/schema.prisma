@@ -67,8 +67,27 @@ model User {
   updatedBy Int?      @db.Integer()
   deletedAt DateTime? @db.Timestamp()
 
-  agentDetail    AgentDetail?
-  merchantDetail MerchantDetail?
+  AgentDetail    AgentDetail?
+  MerchantDetail MerchantDetail?
+  AdminDetail    AdminDetail?
+
+  @@schema("auth")
+}
+
+model AdminDetail {
+  id       Int    @id @default(autoincrement())
+  fullname String
+  address  String
+  phone    String
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
 
   @@schema("auth")
 }
@@ -84,7 +103,7 @@ model AgentDetail {
   balance           Decimal @default(0.0)
 
   user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique // ✅ satu agent detail hanya milik satu user
+  userId Int  @unique
 
   createdAt DateTime  @default(now())
   createdBy Int?      @db.Integer()
@@ -97,7 +116,6 @@ model AgentDetail {
 
 model MerchantDetail {
   id                Int     @id @default(autoincrement())
-  userId            Int     @unique
   businessName      String
   npwp              String
   address           String
@@ -106,13 +124,14 @@ model MerchantDetail {
   accountHolderName String  @db.VarChar(100)
   balance           Decimal @default(0.0)
 
+  users  User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
   createdAt DateTime  @default(now())
   createdBy Int?      @db.Integer()
   updatedAt DateTime? @updatedAt()
   updatedBy Int?      @db.Integer()
   deletedAt DateTime? @db.Timestamp()
-
-  users User @relation(fields: [userId], references: [id])
 
   @@schema("auth")
 }

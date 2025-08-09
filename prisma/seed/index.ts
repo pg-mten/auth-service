@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
 import { Role } from '../../src/shared/constant/auth.constant';
+import Decimal from 'decimal.js';
 
 const prisma = new PrismaClient();
 
@@ -36,6 +37,69 @@ async function main() {
     },
   });
 
+  // === User Admin x3 ===
+  const [adminRolePermissionUser, adminAgentUser, adminMerchantUser] =
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          username: 'admin_role_permission_user',
+          email: 'admin_role_permission@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: adminRolePermission.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+      prisma.user.create({
+        data: {
+          username: 'admin_agent_user',
+          email: 'admin_agent@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: adminAgent.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+      prisma.user.create({
+        data: {
+          username: 'admin_merchant_user',
+          email: 'admin_merchant@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: adminMerchant.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+    ]);
+
+  const adminDetails = await prisma.$transaction([
+    prisma.adminDetail.create({
+      data: {
+        userId: adminRolePermissionUser.id,
+        fullname: 'Admin Role Permission',
+        address: 'Jl. Admin Role Permission',
+        phone: '0898764123',
+        createdBy: superAdminUser.id,
+      },
+    }),
+    prisma.adminDetail.create({
+      data: {
+        userId: adminAgentUser.id,
+        fullname: 'Admin Agent',
+        address: 'Jl. Admin Agent',
+        phone: '08461349795',
+        createdBy: superAdminUser.id,
+      },
+    }),
+    prisma.adminDetail.create({
+      data: {
+        userId: adminMerchantUser.id,
+        fullname: 'Admin Merchant',
+        address: 'Jl. Admin Merchant',
+        phone: '0841357662',
+        createdBy: superAdminUser.id,
+      },
+    }),
+  ]);
+  console.log({ adminDetails });
+
   // === User Agent x2 ===
   const [agentUser1, agentUser2] = await prisma.$transaction([
     prisma.user.create({
@@ -58,7 +122,7 @@ async function main() {
     }),
   ]);
 
-  const [agentDetail1, agentDetail2] = await prisma.$transaction([
+  const agentDetails = await prisma.$transaction([
     prisma.agentDetail.create({
       data: {
         userId: agentUser1.id,
@@ -68,6 +132,7 @@ async function main() {
         bankName: 'BCA',
         accountNumber: '1111111111',
         accountHolderName: 'AGENT1',
+        balance: new Decimal(12100600.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -80,10 +145,13 @@ async function main() {
         bankName: 'BRI',
         accountNumber: '2222222222',
         accountHolderName: 'AGENT2',
+        balance: new Decimal(54500125.12),
         createdBy: superAdminUser.id,
       },
     }),
   ]);
+
+  console.log({ agentDetails });
 
   // === User Merchant x2 ===
   const [merchantUser1, merchantUser2] = await prisma.$transaction([
@@ -107,7 +175,7 @@ async function main() {
     }),
   ]);
 
-  const [merchantDetail1, merchantDetail2] = await prisma.$transaction([
+  const merchantDetails = await prisma.$transaction([
     prisma.merchantDetail.create({
       data: {
         userId: merchantUser1.id,
@@ -117,6 +185,7 @@ async function main() {
         bankName: 'Mandiri',
         accountNumber: '3333333333',
         accountHolderName: 'MERCHANT1',
+        balance: new Decimal(94130125.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -129,10 +198,12 @@ async function main() {
         bankName: 'BNI',
         accountNumber: '4444444444',
         accountHolderName: 'MERCHANT2',
+        balance: new Decimal(97300125.12),
         createdBy: superAdminUser.id,
       },
     }),
   ]);
+  console.log({ merchantDetails });
 
   // Permissions
   const permissionData = [

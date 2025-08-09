@@ -24,6 +24,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AgentDetailModule } from '../agent-detail/agent-detail.module';
 import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @Module({
   imports: [
@@ -80,6 +81,10 @@ import { PrismaModule } from '../prisma/prisma.module';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
