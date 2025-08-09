@@ -6,12 +6,13 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { Role } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
+import { Public } from '../auth/decorator/public.decorator';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/user/profile')
+  @Get('/profile')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Profile' })
   @ApiOkResponse({ type: ProfileDto })
@@ -22,8 +23,14 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(Role.SUPER_ADMIN)
-  @Get('/user/role')
+  @Get('role')
   roles(@CurrentUser() user: AuthInfoDto) {
     return user;
+  }
+
+  @Get()
+  @Public()
+  findAll() {
+    return this.userService.findAll();
   }
 }

@@ -65,4 +65,10 @@ export class UserService {
     }
     return profileDto;
   }
+
+  async findAll() {
+    return this.prisma.user.findMany({
+      include: { role: true },
+    });
+  }
 }
