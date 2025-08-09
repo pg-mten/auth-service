@@ -1,20 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateMerchantDto } from './dto/create-merchant.dto';
+import { AuthHelper } from 'src/shared/helper/auth.helper';
 import { Role } from 'src/shared/constant/auth.constant';
-import { ProfileDto } from './dto/profile.dto';
-import { ProfileMerchantDetailDto } from './dto/profile-merchant.dto';
-import { ProfileAgentDetailDto } from './dto/profile-agent.dto';
-import { ProfieAdminDetailDto } from './dto/profile-admin.dto';
+import { CreateAgentDto } from './dto/create-agent.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findOneByEmailThrow(email: string) {
-    return await this.prisma.user.findFirst({
+    return await this.prisma.user.findFirstOrThrow({
       where: { email },
       include: { role: true },
+    });
+  }
+
+  async findOneByUsernameThrow(username: string) {
+    return await this.prisma.user.findFirstOrThrow({
+      where: { username },
     });
   }
 
@@ -25,50 +30,85 @@ export class UserService {
     });
   }
 
-  async profile(authInfo: AuthInfoDto) {
-    console.log({ authInfo });
-    const role: Role = Object.values(Role).find(
-      (value) => value === (authInfo.role as Role),
-    )!;
-
-    const { id: userId } = authInfo;
-
-    const profile = await this.prisma.user.findUniqueOrThrow({
-      where: { id: userId },
-    });
-    const profileDto = new ProfileDto({ ...profile });
-
-    if (role === Role.AGENT) {
-      const profileDetail = await this.prisma.agentDetail.findUniqueOrThrow({
-        where: { userId },
-      });
-      const profileDetailDto = new ProfileAgentDetailDto({ ...profileDetail });
-      profileDto.agent = profileDetailDto;
-    } else if (role === Role.MERCHANT) {
-      const profileDetail = await this.prisma.merchantDetail.findUniqueOrThrow({
-        where: { userId },
-      });
-      const profileDetailDto = new ProfileMerchantDetailDto({
-        ...profileDetail,
-      });
-      profileDto.merchant = profileDetailDto;
-    } else if (
-      role === Role.ADMIN_AGENT ||
-      role === Role.ADMIN_MERCHANT ||
-      role === Role.ADMIN_ROLE_PERMISSION
-    ) {
-      const profileDetail = await this.prisma.adminDetail.findUniqueOrThrow({
-        where: { userId },
-      });
-      const profileDetailDto = new ProfieAdminDetailDto({ ...profileDetail });
-      profileDto.admin = profileDetailDto;
-    }
-    return profileDto;
-  }
-
   async findAll() {
     return this.prisma.user.findMany({
       include: { role: true },
+    });
+  }
+
+  async registerMerchant(body: CreateMerchantDto) {
+    return await this.prisma.$transaction(async (tx) => {
+      const role = await tx.role.findFirstOrThrow({
+        where: { name: Role.MERCHANT },
+      });
+      const { username, email, password } = body;
+      const user = await tx.user.create({
+        data: {
+          roleId: role.id,
+          username,
+          email,
+          password: await AuthHelper.hashPassword(password),
+        },
+      });
+      const {
+        businessName,
+        npwp,
+        address,
+        bankName,
+        accountNumber,
+        accountHolderName,
+      } = body;
+      const merchant = await tx.merchantDetail.create({
+        data: {
+          userId: user.id,
+          businessName,
+          npwp,
+          address,
+          bankName,
+          accountNumber,
+          accountHolderName,
+        },
+      });
+
+      console.log({ user, merchant });
+    });
+  }
+
+  async registerAgent(body: CreateAgentDto) {
+    return await this.prisma.$transaction(async (tx) => {
+      const role = await tx.role.findFirstOrThrow({
+        where: { name: Role.AGENT },
+      });
+      const { username, email, password } = body;
+      const user = await tx.user.create({
+        data: {
+          roleId: role.id,
+          username,
+          email,
+          password: await AuthHelper.hashPassword(password),
+        },
+      });
+      const {
+        fullname,
+        address,
+        phone,
+        bankName,
+        accountNumber,
+        accountHolderName,
+      } = body;
+      const merchant = await tx.agentDetail.create({
+        data: {
+          userId: user.id,
+          fullname,
+          address,
+          phone,
+          bankName,
+          accountNumber,
+          accountHolderName,
+        },
+      });
+
+      console.log({ user, merchant });
     });
   }
 }

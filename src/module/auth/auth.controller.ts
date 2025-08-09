@@ -3,9 +3,15 @@ import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Request } from 'express';
-import { ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, AuthInfoDto } from './dto/auth.dto';
+import { CurrentUser } from './decorator/current-user.decorator';
 
 @Controller()
 export class AuthController {
@@ -16,6 +22,12 @@ export class AuthController {
   hello(): string {
     console.log('HELLO');
     return 'hello';
+  }
+
+  @Get('/authInfo')
+  @ApiBearerAuth()
+  token(@CurrentUser() authInfo: AuthInfoDto) {
+    return authInfo;
   }
 
   @Public()

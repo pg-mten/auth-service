@@ -1,16 +1,28 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { Role } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { Public } from '../auth/decorator/public.decorator';
+import { UserProfileService } from './user-profile.service';
+import { CreateMerchantDto } from './dto/create-merchant.dto';
+import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
+import { CreateAgentDto } from './dto/create-agent.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userProfileService: UserProfileService,
+  ) {}
 
   @Get('/profile')
   @ApiBearerAuth()
@@ -18,19 +30,39 @@ export class UserController {
   @ApiOkResponse({ type: ProfileDto })
   profile(@CurrentUser() authInfo: AuthInfoDto) {
     console.log({ authInfo });
-    return this.userService.profile(authInfo);
+    return this.userProfileService.profile(authInfo);
   }
 
-  @ApiBearerAuth()
-  @Roles(Role.SUPER_ADMIN)
   @Get('role')
-  roles(@CurrentUser() user: AuthInfoDto) {
-    return user;
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN_SUPER)
+  roles(@CurrentUser() authInfo: AuthInfoDto) {
+    return authInfo;
   }
 
   @Get()
   @Public()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Post('admin/register-merchant')
+  @Roles(Role.ADMIN_SUPER, Role.ADMIN_MERCHANT, Role.ADMIN_ROLE_PERMISSION)
+  @ApiOperation({ summary: 'Admin Register Merchant' })
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateMerchantDto })
+  async registerMerchant(@Body() body: CreateMerchantDto) {
+    await this.userService.registerMerchant(body);
+    return new ResponseDto({ status: ResponseStatus.CREATED });
+  }
+
+  @Post('admin/register-agent')
+  @Roles(Role.ADMIN_SUPER, Role.ADMIN_AGENT, Role.ADMIN_ROLE_PERMISSION)
+  @ApiOperation({ summary: 'Admin Register Agent' })
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateAgentDto })
+  async registerAgent(@Body() body: CreateAgentDto) {
+    await this.userService.registerAgent(body);
+    return new ResponseDto({ status: ResponseStatus.CREATED });
   }
 }
