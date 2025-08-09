@@ -1,14 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 export class ProfieAdminDetailDto {
   constructor(data: ProfieAdminDetailDto) {
-    // Object.assign(this, data);
-    const allowedKeys = Object.keys(this) as (keyof ProfieAdminDetailDto)[];
-    for (const key of allowedKeys) {
-      if (key in data) {
-        this[key] = data[key] as any;
-      }
-    }
+    DtoHelper.assign(this, data);
   }
 
   @ApiProperty({ type: String })

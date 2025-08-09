@@ -1,16 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import Decimal from 'decimal.js';
 import { ToDecimalFixed } from 'src/decorator/decimal.decorator';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 export class ProfileAgentDetailDto {
   constructor(data: ProfileAgentDetailDto) {
-    // Object.assign(this, data);
-    const allowedKeys = Object.keys(this) as (keyof ProfileAgentDetailDto)[];
-    for (const key of allowedKeys) {
-      if (key in data) {
-        this[key] = data[key] as any;
-      }
-    }
+    DtoHelper.assign(this, data);
   }
 
   @ApiProperty({ type: String })

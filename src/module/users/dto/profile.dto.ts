@@ -2,16 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ProfileAgentDetailDto } from './profile-agent.dto';
 import { ProfileMerchantDetailDto } from './profile-merchant.dto';
 import { ProfieAdminDetailDto } from './profile-admin.dto';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 export class ProfileDto {
   constructor(data: ProfileDto) {
-    // Object.assign(this, data);
-    const allowedKeys = Object.keys(this) as (keyof ProfileDto)[];
-    for (const key of allowedKeys) {
-      if (key in data) {
-        this[key] = data[key] as any;
-      }
-    }
+    DtoHelper.assign(this, data);
   }
 
   @ApiProperty({ type: String })
