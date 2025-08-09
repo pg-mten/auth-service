@@ -19,23 +19,20 @@ model Role {
   id   Int    @unique @default(autoincrement())
   name String @db.VarChar()
 
-  created_at DateTime  @default(now())
-  created_by Int?      @db.Integer()
-  updated_at DateTime? @updatedAt()
-  updated_by Int?      @db.Integer()
-  deleted_at DateTime? @db.Timestamp()
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
 
   Permission Permission[]
   User       User[]
 
-  @@map("roles")
   @@schema("auth")
 }
 
 model Permission {
   id         Int      @unique @default(autoincrement())
-  role       Role?    @relation(fields: [role_id], references: [id])
-  role_id    Int?     @db.Integer()
   action     String   @db.VarChar()
   subject    String   @db.VarChar()
   inverted   Boolean  @default(false)
@@ -43,13 +40,15 @@ model Permission {
   conditions Json?    @db.JsonB()
   reason     String?  @db.Text()
 
-  created_at DateTime  @default(now())
-  created_by Int?      @db.Integer()
-  updated_at DateTime? @updatedAt()
-  updated_by Int?      @db.Integer()
-  deleted_at DateTime? @db.Timestamp()
+  role   Role? @relation(fields: [roleId], references: [id])
+  roleId Int?  @db.Integer()
 
-  @@map("permissions")
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
+
   @@schema("auth")
 }
 
@@ -59,87 +58,61 @@ model User {
   email    String @unique @db.VarChar(255)
   password String
 
-  role    Role @relation(fields: [role_id], references: [id])
-  role_id Int  @db.Integer()
+  role   Role @relation(fields: [roleId], references: [id])
+  roleId Int  @db.Integer()
 
-  agentDetail AgentDetail?
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
 
+  agentDetail    AgentDetail?
   merchantDetail MerchantDetail?
 
-  created_at DateTime  @default(now())
-  created_by Int?      @db.Integer()
-  updated_at DateTime? @updatedAt()
-  updated_by Int?      @db.Integer()
-  deleted_at DateTime? @db.Timestamp()
-
-  @@map("users")
   @@schema("auth")
 }
 
 model AgentDetail {
-  id                  Int    @id @default(autoincrement())
-  fullname            String
-  address             String
-  phone               String
-  bank_name           String @db.VarChar(100) // contoh: "BCA", "BRI"
-  account_number      String @db.VarChar(50)
-  account_holder_name String @db.VarChar(100)
-  balance             Int?   @default(0)
+  id                Int     @id @default(autoincrement())
+  fullname          String
+  address           String
+  phone             String
+  bankName          String  @db.VarChar(100) // contoh: "BCA", "BRI"
+  accountNumber     String  @db.VarChar(50)
+  accountHolderName String  @db.VarChar(100)
+  balance           Decimal @default(0.0)
 
-  created_at DateTime  @default(now())
-  created_by Int?      @db.Integer()
-  updated_at DateTime? @updatedAt()
-  updated_by Int?      @db.Integer()
-  deleted_at DateTime? @db.Timestamp()
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique // ✅ satu agent detail hanya milik satu user
 
-  user      User            @relation(fields: [user_id], references: [id])
-  user_id   Int             @unique // ✅ satu agent detail hanya milik satu user
-  merchants AgentMerchant[]
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
 
-  @@map("agentDetail")
   @@schema("auth")
 }
 
 model MerchantDetail {
-  id                  Int    @id @default(autoincrement())
-  businessName        String
-  npwp                String
-  address             String
-  bank_name           String @db.VarChar(100)
-  account_number      String @db.VarChar(50)
-  account_holder_name String @db.VarChar(100)
-  balance             Int?   @default(0)
+  id                Int     @id @default(autoincrement())
+  userId            Int     @unique
+  businessName      String
+  npwp              String
+  address           String
+  bankName          String  @db.VarChar(100)
+  accountNumber     String  @db.VarChar(50)
+  accountHolderName String  @db.VarChar(100)
+  balance           Decimal @default(0.0)
 
-  created_at DateTime  @default(now())
-  created_by Int?      @db.Integer()
-  updated_at DateTime? @updatedAt()
-  updated_by Int?      @db.Integer()
-  deleted_at DateTime? @db.Timestamp()
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
 
-  users   User            @relation(fields: [user_id], references: [id])
-  user_id Int             @unique
-  agents  AgentMerchant[]
+  users User @relation(fields: [userId], references: [id])
 
-  @@map("merchantDetail")
-  @@schema("auth")
-}
-
-model AgentMerchant {
-  agent_id    Int
-  merchant_id Int
-
-  agent    AgentDetail    @relation(fields: [agent_id], references: [id])
-  merchant MerchantDetail @relation(fields: [merchant_id], references: [id])
-
-  assigned_at DateTime @default(now())
-
-  created_at DateTime  @default(now())
-  created_by Int?      @db.Integer()
-  updated_at DateTime? @updatedAt()
-  updated_by Int?      @db.Integer()
-  deleted_at DateTime? @db.Timestamp()
-
-  @@id([agent_id, merchant_id]) // composite primary key
-  @@map("agent_merchants")
   @@schema("auth")
 }

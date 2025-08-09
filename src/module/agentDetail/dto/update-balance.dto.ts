@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ValidateIf } from 'class-validator';
+import Decimal from 'decimal.js';
 
 export class UpdateBalanceAgentDto {
-  @ApiProperty()
-  @IsString()
-  balance: string;
+  @ApiProperty({ type: String })
+  @Type(() => Decimal)
+  @ValidateIf((o) => o.balance !== undefined)
+  balance: Decimal;
 }

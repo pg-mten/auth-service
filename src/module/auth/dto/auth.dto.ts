@@ -39,5 +39,5 @@ export class AuthDto {
   token: string;
 
   @ApiProperty()
-  user: AuthInfoDto;
+  authInfo: AuthInfoDto;
 }

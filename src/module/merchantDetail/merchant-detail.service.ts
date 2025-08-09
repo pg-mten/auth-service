@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
+import { UpdateBalanceMerchantDto } from './dto/update-balance.dto';
 
 @Injectable()
 export class MerchantDetailService {
@@ -11,8 +12,7 @@ export class MerchantDetailService {
     return await this.prisma.merchantDetail.create({
       data: {
         ...dto,
-        user_id: userId,
-        created_by: userId,
+        userId: userId,
       },
     });
   }
@@ -32,7 +32,7 @@ export class MerchantDetailService {
 
   async getByUserId(userId: number) {
     return await this.prisma.merchantDetail.findFirst({
-      where: { user_id: userId },
+      where: { userId: userId },
     });
   }
 
@@ -42,13 +42,13 @@ export class MerchantDetailService {
       where: { id },
       data: {
         ...dto,
-        updated_by: userId,
       },
     });
   }
 
-  async updateBalance(id: number, userId: number, balance: number) {
-    await this.prisma.merchantDetail.update({
+  async updateBalance(id: number, dto: UpdateBalanceMerchantDto) {
+    const { balance } = dto;
+    return await this.prisma.merchantDetail.update({
       where: { id },
       data: {
         balance,

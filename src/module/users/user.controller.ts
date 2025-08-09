@@ -17,7 +17,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Get('/user/role')
   roles(@CurrentUser() user: AuthInfoDto) {
     return user;

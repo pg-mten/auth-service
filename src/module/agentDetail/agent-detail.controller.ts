@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AgentDetailService } from './agent-detail.service';
 import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
@@ -53,11 +54,11 @@ export class AgentDetailController {
   }
 
   @Patch('update-balance/:id')
-    updateBalance(
-      @Param('id') id: string,
-      @Body() dto: UpdateBalanceAgentDto,
-      @CurrentUser('id') userId: number,
-    ) {
-      return this.service.updateBalance(+id, userId, dto);
-    }
+  updateBalance(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateBalanceAgentDto,
+    @CurrentUser('id') userId: number,
+  ) {
+    return this.service.updateBalance(+id, userId, dto);
+  }
 }

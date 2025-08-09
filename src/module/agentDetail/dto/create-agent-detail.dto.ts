@@ -16,13 +16,13 @@ export class CreateAgentDetailDto {
 
   @ApiProperty({ example: 'BCA' })
   @IsString()
-  bank_name: string;
+  bankName: string;
 
   @ApiProperty({ example: '1234567890' })
   @IsString()
-  account_number: string;
+  accountNumber: string;
 
   @ApiProperty({ example: 'Nama Pemilik Rekening' })
   @IsString()
-  account_holder_name: string;
+  accountHolderName: string;
 }

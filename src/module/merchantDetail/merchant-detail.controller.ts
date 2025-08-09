@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { MerchantDetailService } from './merchant-detail.service';
 import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
@@ -46,10 +54,9 @@ export class MerchantDetailController {
 
   @Patch('update-balance/:id')
   updateBalance(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateBalanceMerchantDto,
-    @CurrentUser('id') userId: number,
   ) {
-    return this.service.updateBalance(+id, userId, +dto.balance);
+    return this.service.updateBalance(id, dto);
   }
 }

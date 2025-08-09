@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
+import { Role } from '../../src/shared/constant/auth.constant';
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Cleanup
-  await prisma.agentMerchant.deleteMany();
   await prisma.agentDetail.deleteMany();
   await prisma.merchantDetail.deleteMany();
   await prisma.user.deleteMany();
@@ -20,14 +20,11 @@ async function main() {
     adminMerchant,
     agentRole,
     merchantRole,
-  ] = await prisma.$transaction([
-    prisma.role.create({ data: { name: 'admin' } }),
-    prisma.role.create({ data: { name: 'admin_role_permission' } }),
-    prisma.role.create({ data: { name: 'admin_agent' } }),
-    prisma.role.create({ data: { name: 'admin_merchant' } }),
-    prisma.role.create({ data: { name: 'agent' } }),
-    prisma.role.create({ data: { name: 'merchant' } }),
-  ]);
+  ] = await prisma.$transaction(
+    Object.values(Role).map((role) => {
+      return prisma.role.create({ data: { name: role } });
+    }),
+  );
 
   // Super Admin User
   const superAdminUser = await prisma.user.create({
@@ -35,7 +32,7 @@ async function main() {
       username: 'superadmin',
       email: 'superadmin@example.com',
       password: await AuthHelper.hashPassword('password123'),
-      role_id: superAdmin.id,
+      roleId: superAdmin.id,
     },
   });
 
@@ -46,8 +43,8 @@ async function main() {
         username: 'agent_user_1',
         email: 'agent1@example.com',
         password: await AuthHelper.hashPassword('password123'),
-        role_id: agentRole.id,
-        created_by: superAdminUser.id,
+        roleId: agentRole.id,
+        createdBy: superAdminUser.id,
       },
     }),
     prisma.user.create({
@@ -55,8 +52,8 @@ async function main() {
         username: 'agent_user_2',
         email: 'agent2@example.com',
         password: await AuthHelper.hashPassword('password123'),
-        role_id: agentRole.id,
-        created_by: superAdminUser.id,
+        roleId: agentRole.id,
+        createdBy: superAdminUser.id,
       },
     }),
   ]);
@@ -64,26 +61,26 @@ async function main() {
   const [agentDetail1, agentDetail2] = await prisma.$transaction([
     prisma.agentDetail.create({
       data: {
-        user_id: agentUser1.id,
+        userId: agentUser1.id,
         fullname: 'Agent One',
         address: 'Jl. Agent 1',
         phone: '0811111111',
-        bank_name: 'BCA',
-        account_number: '1111111111',
-        account_holder_name: 'AGENT1',
-        created_by: superAdminUser.id,
+        bankName: 'BCA',
+        accountNumber: '1111111111',
+        accountHolderName: 'AGENT1',
+        createdBy: superAdminUser.id,
       },
     }),
     prisma.agentDetail.create({
       data: {
-        user_id: agentUser2.id,
+        userId: agentUser2.id,
         fullname: 'Agent Two',
         address: 'Jl. Agent 2',
         phone: '0822222222',
-        bank_name: 'BRI',
-        account_number: '2222222222',
-        account_holder_name: 'AGENT2',
-        created_by: superAdminUser.id,
+        bankName: 'BRI',
+        accountNumber: '2222222222',
+        accountHolderName: 'AGENT2',
+        createdBy: superAdminUser.id,
       },
     }),
   ]);
@@ -95,8 +92,8 @@ async function main() {
         username: 'merchant_user_1',
         email: 'merchant1@example.com',
         password: await AuthHelper.hashPassword('password123'),
-        role_id: merchantRole.id,
-        created_by: superAdminUser.id,
+        roleId: merchantRole.id,
+        createdBy: superAdminUser.id,
       },
     }),
     prisma.user.create({
@@ -104,8 +101,8 @@ async function main() {
         username: 'merchant_user_2',
         email: 'merchant2@example.com',
         password: await AuthHelper.hashPassword('password123'),
-        role_id: merchantRole.id,
-        created_by: superAdminUser.id,
+        roleId: merchantRole.id,
+        createdBy: superAdminUser.id,
       },
     }),
   ]);
@@ -113,50 +110,34 @@ async function main() {
   const [merchantDetail1, merchantDetail2] = await prisma.$transaction([
     prisma.merchantDetail.create({
       data: {
-        user_id: merchantUser1.id,
+        userId: merchantUser1.id,
         businessName: 'Merchant One',
         npwp: '01.234.567.8-901.000',
         address: 'Jl. Merchant 1',
-        bank_name: 'Mandiri',
-        account_number: '3333333333',
-        account_holder_name: 'MERCHANT1',
-        created_by: superAdminUser.id,
+        bankName: 'Mandiri',
+        accountNumber: '3333333333',
+        accountHolderName: 'MERCHANT1',
+        createdBy: superAdminUser.id,
       },
     }),
     prisma.merchantDetail.create({
       data: {
-        user_id: merchantUser2.id,
+        userId: merchantUser2.id,
         businessName: 'Merchant Two',
         npwp: '09.876.543.2-123.000',
         address: 'Jl. Merchant 2',
-        bank_name: 'BNI',
-        account_number: '4444444444',
-        account_holder_name: 'MERCHANT2',
-        created_by: superAdminUser.id,
+        bankName: 'BNI',
+        accountNumber: '4444444444',
+        accountHolderName: 'MERCHANT2',
+        createdBy: superAdminUser.id,
       },
     }),
   ]);
 
-  // Relasi Agent-Merchant
-  await prisma.agentMerchant.createMany({
-    data: [
-      {
-        agent_id: agentDetail1.id,
-        merchant_id: merchantDetail1.id,
-        created_by: superAdminUser.id,
-      },
-      {
-        agent_id: agentDetail2.id,
-        merchant_id: merchantDetail2.id,
-        created_by: superAdminUser.id,
-      },
-    ],
-  });
-
   // Permissions
   const permissionData = [
     // Super admin
-    { action: 'manage', subject: 'all', field: [], role_id: superAdmin.id },
+    { action: 'manage', subject: 'all', field: [], roleId: superAdmin.id },
 
     // Admin Role & Permission
     ...['Role', 'Permission'].flatMap((subject) =>
@@ -164,8 +145,8 @@ async function main() {
         action,
         subject,
         field: [],
-        role_id: adminRolePermission.id,
-        created_by: superAdminUser.id,
+        roleId: adminRolePermission.id,
+        createdBy: superAdminUser.id,
       })),
     ),
 
@@ -174,8 +155,8 @@ async function main() {
       action,
       subject: 'AgentDetail',
       field: [],
-      role_id: adminAgent.id,
-      created_by: superAdminUser.id,
+      roleId: adminAgent.id,
+      createdBy: superAdminUser.id,
     })),
 
     // Admin Merchant
@@ -183,8 +164,8 @@ async function main() {
       action,
       subject: 'MerchantDetail',
       field: [],
-      role_id: adminMerchant.id,
-      created_by: superAdminUser.id,
+      roleId: adminMerchant.id,
+      createdBy: superAdminUser.id,
     })),
 
     // Agent (bisa baca detail milik sendiri)
@@ -192,9 +173,9 @@ async function main() {
       action: 'read',
       subject: 'AgentDetail',
       field: [],
-      role_id: agentRole.id,
-      created_by: superAdminUser.id,
-      conditions: { user_id: '$userId' },
+      roleId: agentRole.id,
+      createdBy: superAdminUser.id,
+      conditions: { userId: '$userId' },
     },
 
     // Merchant (bisa baca detail milik sendiri)
@@ -202,9 +183,9 @@ async function main() {
       action: 'read',
       subject: 'MerchantDetail',
       field: [],
-      role_id: merchantRole.id,
-      created_by: superAdminUser.id,
-      conditions: { user_id: '$userId' },
+      roleId: merchantRole.id,
+      createdBy: superAdminUser.id,
+      conditions: { userId: '$userId' },
     },
   ];
 

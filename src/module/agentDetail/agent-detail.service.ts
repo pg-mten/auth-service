@@ -12,8 +12,7 @@ export class AgentDetailService {
     return await this.prisma.agentDetail.create({
       data: {
         ...dto,
-        user_id: userId,
-        created_by: userId,
+        userId: userId,
       },
     });
   }
@@ -36,15 +35,15 @@ export class AgentDetailService {
       where: { id },
       data: {
         ...dto,
-        updated_by: userId,
       },
     });
   }
 
   async updateBalance(id: number, userId: number, dto: UpdateBalanceAgentDto) {
+    const { balance } = dto;
     return await this.prisma.agentDetail.update({
       where: { id },
-      data: { balance: +dto.balance, updated_by: userId },
+      data: { balance },
     });
   }
 }

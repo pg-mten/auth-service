@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { DateHelper } from 'src/shared/helper/date.helper';
 
 @Injectable()
 export class PermissionsService {
@@ -13,7 +14,7 @@ export class PermissionsService {
 
   findAll() {
     return this.prisma.permission.findMany({
-      where: { deleted_at: null },
+      where: { deletedAt: null },
     });
   }
 
@@ -29,7 +30,7 @@ export class PermissionsService {
     return this.prisma.permission.update({
       where: { id },
       data: {
-        deleted_at: new Date(),
+        deletedAt: DateHelper.now().toJSDate(),
       },
     });
   }
@@ -37,14 +38,14 @@ export class PermissionsService {
   async assignToRole(permissionId: number, roleId: number) {
     return this.prisma.permission.update({
       where: { id: permissionId },
-      data: { role_id: roleId },
+      data: { roleId: roleId },
     });
   }
 
   async unassignFromRole(permissionId: number) {
     return this.prisma.permission.update({
       where: { id: permissionId },
-      data: { role_id: null },
+      data: { roleId: null },
     });
   }
   async assignMultiplePermissions(roleId: number, permissionIds: number[]) {
@@ -59,7 +60,7 @@ export class PermissionsService {
         id: { in: permissionIds },
       },
       data: {
-        role_id: roleId,
+        roleId: roleId,
       },
     });
   }

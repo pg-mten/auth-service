@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Prisma } from '@prisma/client';
+import { DateHelper } from 'src/shared/helper/date.helper';
 
 type UserIdGetter = () => number | null;
 
 export function auditMiddleware(getUserId: UserIdGetter): Prisma.Middleware {
   return async (params, next) => {
     const userId = getUserId();
-    const now = new Date();
+    const now = DateHelper.now();
 
     if (
       params.model &&
@@ -17,16 +18,16 @@ export function auditMiddleware(getUserId: UserIdGetter): Prisma.Middleware {
       if (params.action === 'create') {
         params.args.data = {
           ...data,
-          created_by: userId ?? undefined,
-          created_at: now,
+          createdBy: userId ?? undefined,
+          createdAt: now,
         };
       }
 
       if (params.action === 'update') {
         params.args.data = {
           ...data,
-          updated_by: userId ?? undefined,
-          updated_at: now,
+          updatedBy: userId ?? undefined,
+          updatedAt: now,
         };
       }
 
@@ -35,8 +36,8 @@ export function auditMiddleware(getUserId: UserIdGetter): Prisma.Middleware {
         params.action = 'update';
         params.args.data = {
           ...data,
-          deleted_by: userId ?? undefined,
-          deleted_at: now,
+          deletedBy: userId ?? undefined,
+          deletedAt: now,
         };
       }
     }

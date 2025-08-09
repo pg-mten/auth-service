@@ -21,9 +21,9 @@ import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
 import { PrismaUserInterceptor } from '../../interceptor/prisma-user.interceptor';
 import { PrismaService } from '../prisma/prisma.service';
-import { PrismaModule } from 'nestjs-prisma';
 import { AgentDetailModule } from '../agentDetail/agent-detail.module';
 import { MerchantDetailModule } from '../merchantDetail/merchant-detail.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
   imports: [
