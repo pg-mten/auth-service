@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
@@ -64,5 +64,21 @@ export class UserController {
   async registerAgent(@Body() body: CreateAgentDto) {
     await this.userService.registerAgent(body);
     return new ResponseDto({ status: ResponseStatus.CREATED });
+  }
+
+  @Public()
+  @Get('internal/merchants-and-agents-by-ids')
+  internalfindAllMerchantsAndAgentsByIds(
+    @Query('merchantIds') merchantIds: string,
+    @Query('agentIds') agentIds: string,
+  ) {
+    console.log({ merchantIds, agentIds });
+    const merchantIdList = merchantIds.split(',').map(Number);
+    const agentIdList = agentIds.split(',').map(Number);
+    console.log({ merchantIdList, agentIdList });
+    return this.userService.internalfindAllMerchantsAndAgentsByIds(
+      merchantIdList,
+      agentIdList,
+    );
   }
 }

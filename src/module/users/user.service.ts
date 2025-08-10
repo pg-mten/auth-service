@@ -5,10 +5,18 @@ import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
 import { Role } from 'src/shared/constant/auth.constant';
 import { CreateAgentDto } from './dto/create-agent.dto';
+import { MerchantDetailService } from '../merchant-detail/merchant-detail.service';
+import { AgentDetailService } from '../agent-detail/agent-detail.service';
+import { MerchantDto } from '../merchant-detail/dto/merchant.dto';
+import { AgentDto } from '../agent-detail/dto/agent.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly merchantService: MerchantDetailService,
+    private readonly agentService: AgentDetailService,
+  ) {}
 
   async findOneByEmailThrow(email: string) {
     return await this.prisma.user.findFirstOrThrow({
@@ -34,6 +42,20 @@ export class UserService {
     return this.prisma.user.findMany({
       include: { role: true },
     });
+  }
+
+  async internalfindAllMerchantsAndAgentsByIds(
+    merchantIdList: number[],
+    agentIdList: number[],
+  ): Promise<{ merchants: MerchantDto[]; agents: AgentDto[] }> {
+    const [merchants, agents] = await Promise.all([
+      this.merchantService.findIds(merchantIdList),
+      this.agentService.findIds(agentIdList),
+    ]);
+    return {
+      merchants,
+      agents,
+    };
   }
 
   async registerMerchant(body: CreateMerchantDto) {

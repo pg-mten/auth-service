@@ -47,6 +47,8 @@ export class AgentDetailController {
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'AgentDetail'))
+  @ApiOperation({ summary: 'Agent by id' })
+  @ApiOkResponse({ type: AgentDto })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOneThrow(id);
   }

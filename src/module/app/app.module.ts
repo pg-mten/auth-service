@@ -26,6 +26,7 @@ import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module'
 import { PrismaModule } from '../prisma/prisma.module';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { PoliciesGuard } from '../casl/policies.guard';
+import { CaslModule } from '../casl/casl.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { PoliciesGuard } from '../casl/policies.guard';
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [

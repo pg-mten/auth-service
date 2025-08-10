@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
@@ -34,13 +34,34 @@ export class MerchantDetailService {
     });
   }
 
-  async findOneThrow(id: number) {
-    const detail = await this.prisma.merchantDetail.findUniqueOrThrow({
-      where: { id },
+  async findIds(ids: number[]) {
+    const merchants = await this.prisma.merchantDetail.findMany({
+      where: { id: { in: ids } },
+      include: { user: true },
     });
 
-    if (!detail) throw new NotFoundException('Merchant detail not found');
-    return detail;
+    return merchants.map((merchant) => {
+      return new MerchantDto({
+        ...merchant,
+        ...merchant.user,
+        merchantId: merchant.id,
+        userId: merchant.user.id,
+      });
+    });
+  }
+
+  async findOneThrow(id: number) {
+    const merchant = await this.prisma.merchantDetail.findUniqueOrThrow({
+      where: { id },
+      include: { user: true },
+    });
+
+    return new MerchantDto({
+      ...merchant,
+      ...merchant.user,
+      merchantId: merchant.id,
+      userId: merchant.user.id,
+    });
   }
 
   async update(id: number, userId: number, dto: UpdateMerchantDetailDto) {

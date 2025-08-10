@@ -48,6 +48,8 @@ export class MerchantDetailController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Merchant by id' })
+  @ApiOkResponse({ type: MerchantDto })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.service.findOneThrow(id);
   }

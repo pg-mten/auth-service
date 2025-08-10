@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
@@ -33,13 +33,35 @@ export class AgentDetailService {
       });
     });
   }
-  async findOneThrow(id: number) {
-    const detail = await this.prisma.agentDetail.findUniqueOrThrow({
-      where: { id },
+
+  async findIds(ids: number[]) {
+    const agents = await this.prisma.agentDetail.findMany({
+      where: { id: { in: ids } },
+      include: { user: true },
     });
 
-    if (!detail) throw new NotFoundException('Agent detail not found');
-    return detail;
+    return agents.map((agent) => {
+      return new AgentDto({
+        ...agent,
+        ...agent.user,
+        agentId: agent.id,
+        userId: agent.user.id,
+      });
+    });
+  }
+
+  async findOneThrow(id: number) {
+    const agent = await this.prisma.agentDetail.findUniqueOrThrow({
+      where: { id },
+      include: { user: true },
+    });
+
+    return new AgentDto({
+      ...agent,
+      ...agent.user,
+      agentId: agent.id,
+      userId: agent.user.id,
+    });
   }
 
   async update(id: number, userId: number, dto: UpdateAgentDetailDto) {
