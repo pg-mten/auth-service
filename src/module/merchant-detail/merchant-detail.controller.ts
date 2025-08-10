@@ -12,6 +12,7 @@ import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -55,7 +56,8 @@ export class MerchantDetailController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can('update', 'MerchantDetail'),
   )
-  @ApiOperation({ summary: 'Update Merchant' })
+  @ApiOperation({ summary: 'Update Merchant by id' })
+  @ApiBody({ type: UpdateMerchantDetailDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateMerchantDetailDto,

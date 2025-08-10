@@ -12,6 +12,7 @@ import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -52,7 +53,8 @@ export class AgentDetailController {
 
   @Patch('update/:id')
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'AgentDetail'))
-  @ApiOperation({ summary: 'Update Agent' })
+  @ApiOperation({ summary: 'Update Agent by id' })
+  @ApiBody({ type: UpdateAgentDetailDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateAgentDetailDto,
