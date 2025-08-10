@@ -7,4 +7,13 @@ export class DtoHelper {
       }
     }
   }
+
+  static filter<T extends object>(dto: T) {
+    return Object.fromEntries(
+      Object.entries(dto).filter(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, value]) => value !== null && value !== undefined,
+      ),
+    ) as Partial<T>;
+  }
 }

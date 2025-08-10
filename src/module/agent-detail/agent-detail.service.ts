@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
 import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
+import { AgentDto } from './dto/agent.dto';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 @Injectable()
 export class AgentDetailService {
@@ -18,10 +20,21 @@ export class AgentDetailService {
   }
 
   async findAll() {
-    return await this.prisma.agentDetail.findMany();
+    const agents = await this.prisma.agentDetail.findMany({
+      include: { user: true },
+    });
+
+    return agents.map((agent) => {
+      return new AgentDto({
+        ...agent,
+        ...agent.user,
+        agentId: agent.id,
+        userId: agent.user.id,
+      });
+    });
   }
-  async findOne(id: number) {
-    const detail = await this.prisma.agentDetail.findUnique({
+  async findOneThrow(id: number) {
+    const detail = await this.prisma.agentDetail.findUniqueOrThrow({
       where: { id },
     });
 
@@ -30,11 +43,12 @@ export class AgentDetailService {
   }
 
   async update(id: number, userId: number, dto: UpdateAgentDetailDto) {
-    await this.findOne(id); // validate exists
+    await this.findOneThrow(id);
+    const filterDto = DtoHelper.filter(dto);
     return this.prisma.agentDetail.update({
       where: { id },
       data: {
-        ...dto,
+        ...filterDto,
       },
     });
   }

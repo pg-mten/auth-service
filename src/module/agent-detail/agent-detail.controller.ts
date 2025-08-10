@@ -5,18 +5,23 @@ import {
   Body,
   Patch,
   Param,
-  UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
 import { AgentDetailService } from './agent-detail.service';
 import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
-import { PoliciesGuard } from '../casl/policies.guard';
 import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
+import { AgentDto } from './dto/agent.dto';
+import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 
 @ApiTags('Agent Detail')
 @ApiBearerAuth()
@@ -30,27 +35,31 @@ export class AgentDetailController {
     return this.service.create(userId, dto);
   }
 
+  // TODO Pagination
   @Get()
-  @UseGuards(PoliciesGuard)
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'AgentDetail'))
+  @ApiOperation({ summary: 'List of Agents' })
+  @ApiOkResponse({ type: AgentDto, isArray: true })
   findAll() {
     return this.service.findAll();
   }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can('read', 'AgentDetail'))
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findOneThrow(id);
   }
 
   @Patch('update/:id')
   @CheckPolicies((ability: AppAbility) => ability.can('update', 'AgentDetail'))
-  update(
-    @Param('id') id: string,
+  @ApiOperation({ summary: 'Update Agent' })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateAgentDetailDto,
     @CurrentUser('id') userId: number,
   ) {
-    return this.service.update(+id, userId, dto);
+    await this.service.update(id, userId, dto);
+    return new ResponseDto({ status: ResponseStatus.UPDATED });
   }
 
   @Patch('update-balance/:id')

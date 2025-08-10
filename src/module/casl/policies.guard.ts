@@ -4,6 +4,7 @@ import { CaslCacheService } from './casl-cache.service';
 import { AppAbility } from './casl-ability.factory';
 import { CHECK_POLICIES_KEY } from './policy.decorator';
 import { PolicyHandler } from './types/policy-handler.type';
+import { IS_PUBLIC_KEY } from '../auth/decorator/public.decorator';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
@@ -23,6 +24,11 @@ export class PoliciesGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return true;
     const handlers =
       this.reflector.get<PolicyHandler[]>(
         CHECK_POLICIES_KEY,

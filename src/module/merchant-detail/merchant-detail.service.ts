@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
 import { UpdateBalanceMerchantDto } from './dto/update-balance.dto';
+import { MerchantDto } from './dto/merchant.dto';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 @Injectable()
 export class MerchantDetailService {
@@ -18,11 +20,22 @@ export class MerchantDetailService {
   }
 
   async findAll() {
-    return await this.prisma.merchantDetail.findMany();
+    const merchants = await this.prisma.merchantDetail.findMany({
+      include: { user: true },
+    });
+
+    return merchants.map((merchant) => {
+      return new MerchantDto({
+        ...merchant,
+        ...merchant.user,
+        merchantId: merchant.id,
+        userId: merchant.user.id,
+      });
+    });
   }
 
-  async findOne(id: number) {
-    const detail = await this.prisma.merchantDetail.findUnique({
+  async findOneThrow(id: number) {
+    const detail = await this.prisma.merchantDetail.findUniqueOrThrow({
       where: { id },
     });
 
@@ -30,18 +43,13 @@ export class MerchantDetailService {
     return detail;
   }
 
-  async getByUserId(userId: number) {
-    return await this.prisma.merchantDetail.findFirst({
-      where: { userId: userId },
-    });
-  }
-
   async update(id: number, userId: number, dto: UpdateMerchantDetailDto) {
-    await this.findOne(id); // ensure exists
+    await this.findOneThrow(id); // ensure exists
+    const filterDto = DtoHelper.filter(dto);
     return this.prisma.merchantDetail.update({
       where: { id },
       data: {
-        ...dto,
+        ...filterDto,
       },
     });
   }

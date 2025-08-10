@@ -4,6 +4,7 @@ import { PaginationDto } from './pagination/pagination';
 
 export enum ResponseStatus {
   CREATED = 'CREATED',
+  UPDATED = 'UPDATED',
   SUCCESS = 'SUCCESS',
   ERROR = 'ERROR',
   PARTIAL_SUCCESS = 'PARTIAL_SUCCESS',
@@ -33,6 +34,10 @@ export class ResponseDto<T> {
       case ResponseStatus.CREATED:
         statusCodeTemp = HttpStatus.CREATED;
         messageTemp = 'Created';
+        break;
+      case ResponseStatus.UPDATED:
+        statusCodeTemp = HttpStatus.OK;
+        messageTemp = 'Updated';
         break;
       case ResponseStatus.SUCCESS:
         statusCodeTemp = HttpStatus.OK;

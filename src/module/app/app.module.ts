@@ -25,6 +25,7 @@ import { AgentDetailModule } from '../agent-detail/agent-detail.module';
 import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { PoliciesGuard } from '../casl/policies.guard';
 
 @Module({
   imports: [
@@ -85,6 +86,10 @@ import { RolesGuard } from '../auth/guard/roles.guard';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PoliciesGuard,
     },
   ],
 })

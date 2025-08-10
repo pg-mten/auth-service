@@ -9,6 +9,10 @@ export function auditMiddleware(getUserId: UserIdGetter): Prisma.Middleware {
     const userId = getUserId();
     const now = DateHelper.now();
 
+    console.log('auditMiddleware');
+    console.log({ userId });
+    console.log({ now });
+
     if (
       params.model &&
       ['create', 'update', 'delete'].includes(params.action)

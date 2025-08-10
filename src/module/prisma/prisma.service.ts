@@ -14,12 +14,17 @@ export class PrismaService
     });
   }
   setUserId(userId: number | null) {
+    console.log('PrismaService.setUserId');
+    console.log({ userId });
     this.currentUserId = userId;
   }
   async onModuleInit() {
-    this.$use(auditMiddleware(() => this.currentUserId));
     await this.$connect();
+    console.log('PrismaService.OnModuleInit');
+    console.log(this.currentUserId);
+    this.$use(auditMiddleware(() => this.currentUserId));
   }
+
   async onModuleDestroy() {
     await this.$disconnect();
   }
