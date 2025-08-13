@@ -39,7 +39,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(API_PREFIX, app, document);
   }
-
   await app.listen(PORT, () => {
     console.log(`Auth service started listening: ${PORT}`);
   });

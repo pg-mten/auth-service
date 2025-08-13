@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Head,
+  Headers,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
@@ -16,13 +24,31 @@ import { UserProfileService } from './user-profile.service';
 import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { CreateAgentDto } from './dto/create-agent.dto';
-
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly userProfileService: UserProfileService,
   ) {}
+
+  @Get('/generate-private-key')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Generate Private Key' })
+  generatePrivateKey(@CurrentUser() authInfo: AuthInfoDto) {
+    return this.userProfileService.generatePrivateKey(authInfo);
+  }
+
+  @Get('/decrypt')
+  @Public()
+  decyrptPrivateKey(
+    @Headers('x-merchant-id') merchantId: string,
+    @Headers('x-signature') signature: string,
+  ) {
+    return this.userProfileService.validateSignatureRequest(
+      +merchantId,
+      signature,
+    );
+  }
 
   @Get('/profile')
   @ApiBearerAuth()
