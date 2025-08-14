@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Headers,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -22,7 +23,7 @@ export class RolesController {
 
   @Post()
   @CheckPolicies((ability: AppAbility) => ability.can('create', 'Role'))
-  create(@Body() dto: CreateRoleDto) {
+  async create(@Body() dto: CreateRoleDto) {
     return this.rolesService.create(dto);
   }
 
