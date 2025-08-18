@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { EmailUnique } from '../validator/email-unique.validator';
 import { UsernameUnique } from '../validator/username-unique.validator';
 
@@ -41,4 +41,9 @@ export class CreateMerchantDto {
   @IsString()
   @ApiProperty()
   accountHolderName: string;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({ type: Number, required: false })
+  settlementInterval: number | null;
 }

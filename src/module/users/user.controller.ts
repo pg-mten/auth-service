@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Head,
-  Headers,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { AuthInfoDto } from '../auth/dto/auth.dto';

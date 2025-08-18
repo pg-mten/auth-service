@@ -9,6 +9,8 @@ import { MerchantDetailService } from '../merchant-detail/merchant-detail.servic
 import { AgentDetailService } from '../agent-detail/agent-detail.service';
 import { MerchantDto } from '../merchant-detail/dto/merchant.dto';
 import { AgentDto } from '../agent-detail/dto/agent.dto';
+import axios from 'axios';
+import { URL_CONFIG } from 'src/shared/constant/url.constant';
 
 @Injectable()
 export class UserService {
@@ -93,6 +95,17 @@ export class UserService {
       });
 
       console.log({ user, merchant });
+      const { settlementInterval } = body;
+      try {
+        const res = await axios.post(`${URL_CONFIG}/merchant`, {
+          id: merchant.id,
+          settlementInterval: settlementInterval,
+        });
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
     });
   }
 
@@ -118,7 +131,7 @@ export class UserService {
         accountNumber,
         accountHolderName,
       } = body;
-      const merchant = await tx.agentDetail.create({
+      const agent = await tx.agentDetail.create({
         data: {
           userId: user.id,
           fullname,
@@ -130,7 +143,17 @@ export class UserService {
         },
       });
 
-      console.log({ user, merchant });
+      console.log({ user, agent });
+
+      try {
+        const res = await axios.post(`${URL_CONFIG}/agent`, {
+          id: agent.id,
+        });
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
     });
   }
 }
