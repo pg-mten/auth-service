@@ -5,6 +5,7 @@ import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
 import { UpdateBalanceMerchantDto } from './dto/update-balance.dto';
 import { MerchantDto } from './dto/merchant.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
+import { MerchantNameDto } from './dto/merchant-names.dto';
 
 @Injectable()
 export class MerchantDetailService {
@@ -31,6 +32,19 @@ export class MerchantDetailService {
         merchantId: merchant.id,
         userId: merchant.user.id,
       });
+    });
+  }
+
+  async findAllNames() {
+    const merchants = await this.prisma.merchantDetail.findMany({
+      select: {
+        id: true,
+        businessName: true,
+      },
+    });
+
+    return merchants.map((merchant) => {
+      return new MerchantNameDto({ ...merchant });
     });
   }
 

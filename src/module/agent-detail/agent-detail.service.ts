@@ -5,6 +5,7 @@ import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
 import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
 import { AgentDto } from './dto/agent.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
+import { AgentNameDto } from './dto/agent-name.dto';
 
 @Injectable()
 export class AgentDetailService {
@@ -31,6 +32,19 @@ export class AgentDetailService {
         agentId: agent.id,
         userId: agent.user.id,
       });
+    });
+  }
+
+  async findAllNames() {
+    const agents = await this.prisma.agentDetail.findMany({
+      select: {
+        id: true,
+        fullname: true,
+      },
+    });
+
+    return agents.map((agent) => {
+      return new AgentNameDto({ ...agent });
     });
   }
 

@@ -23,6 +23,8 @@ import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
 import { MerchantDto } from './dto/merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
+import { MerchantNameDto } from './dto/merchant-names.dto';
+import { Public } from '../auth/decorator/public.decorator';
 
 @ApiTags('Merchant Detail')
 @ApiBearerAuth()
@@ -45,6 +47,14 @@ export class MerchantDetailController {
   @ApiOkResponse({ type: MerchantDto, isArray: true })
   findAll() {
     return this.service.findAll();
+  }
+
+  @Public()
+  @Get('dropdown')
+  @ApiOperation({ summary: 'List of Merchant Id and Name for dropdown' })
+  @ApiOkResponse({ type: MerchantNameDto, isArray: true })
+  findAllNames() {
+    return this.service.findAllNames();
   }
 
   @Get(':id')

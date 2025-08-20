@@ -23,6 +23,8 @@ import { AppAbility } from '../casl/casl-ability.factory';
 import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
 import { AgentDto } from './dto/agent.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
+import { Public } from '../auth/decorator/public.decorator';
+import { AgentNameDto } from './dto/agent-name.dto';
 
 @ApiTags('Agent Detail')
 @ApiBearerAuth()
@@ -43,6 +45,14 @@ export class AgentDetailController {
   @ApiOkResponse({ type: AgentDto, isArray: true })
   findAll() {
     return this.service.findAll();
+  }
+
+  @Public()
+  @Get('dropdown')
+  @ApiOperation({ summary: 'List of Agent Id and Name for dropdown' })
+  @ApiOkResponse({ type: AgentNameDto, isArray: true })
+  findAllNames() {
+    return this.service.findAllNames();
   }
 
   @Get(':id')
