@@ -154,36 +154,55 @@ async function main() {
   console.log({ agentDetails });
 
   // === User Merchant x2 ===
-  const [merchantUser1, merchantUser2] = await prisma.$transaction([
-    prisma.user.create({
-      data: {
-        username: 'merchant_user_1',
-        email: 'merchant1@example.com',
-        password: await AuthHelper.hashPassword('password123'),
-        roleId: merchantRole.id,
-        createdBy: superAdminUser.id,
-      },
-    }),
-    prisma.user.create({
-      data: {
-        username: 'merchant_user_2',
-        email: 'merchant2@example.com',
-        password: await AuthHelper.hashPassword('password123'),
-        roleId: merchantRole.id,
-        createdBy: superAdminUser.id,
-      },
-    }),
-  ]);
+  const [merchantUser1, merchantUser2, merchantUser3, merchantUser4] =
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          username: 'merchant_user_1',
+          email: 'merchant1@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: merchantRole.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+      prisma.user.create({
+        data: {
+          username: 'merchant_user_2',
+          email: 'merchant2@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: merchantRole.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+      prisma.user.create({
+        data: {
+          username: 'merchant_user_3',
+          email: 'merchant3@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: merchantRole.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+      prisma.user.create({
+        data: {
+          username: 'merchant_user_4',
+          email: 'merchant4@example.com',
+          password: await AuthHelper.hashPassword('password123'),
+          roleId: merchantRole.id,
+          createdBy: superAdminUser.id,
+        },
+      }),
+    ]);
 
   const merchantDetails = await prisma.$transaction([
     prisma.merchantDetail.create({
       data: {
         userId: merchantUser1.id,
         businessName: 'Merchant One',
-        npwp: '01.234.567.8-901.000',
+        npwp: '01.234.567.8-901.111',
         address: 'Jl. Merchant 1',
         bankName: 'Mandiri',
-        accountNumber: '3333333333',
+        accountNumber: '111111111',
         accountHolderName: 'MERCHANT1',
         balance: new Decimal(94130125.12),
         createdBy: superAdminUser.id,
@@ -193,12 +212,38 @@ async function main() {
       data: {
         userId: merchantUser2.id,
         businessName: 'Merchant Two',
-        npwp: '09.876.543.2-123.000',
+        npwp: '09.876.543.2-123.222',
         address: 'Jl. Merchant 2',
         bankName: 'BNI',
-        accountNumber: '4444444444',
+        accountNumber: '22222222',
         accountHolderName: 'MERCHANT2',
         balance: new Decimal(97300125.12),
+        createdBy: superAdminUser.id,
+      },
+    }),
+    prisma.merchantDetail.create({
+      data: {
+        userId: merchantUser3.id,
+        businessName: 'Merchant Three',
+        npwp: '10.443.252.9-534.333',
+        address: 'Jl. Merchant 3',
+        bankName: 'BNI',
+        accountNumber: '333333333',
+        accountHolderName: 'MERCHANT3',
+        balance: new Decimal(107300125.12),
+        createdBy: superAdminUser.id,
+      },
+    }),
+    prisma.merchantDetail.create({
+      data: {
+        userId: merchantUser4.id,
+        businessName: 'Merchant Four',
+        npwp: '78.225.445.9-363.444',
+        address: 'Jl. Merchant 4',
+        bankName: 'BNI',
+        accountNumber: '444444444',
+        accountHolderName: 'MERCHANT4',
+        balance: new Decimal(45232789.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -262,7 +307,9 @@ async function main() {
 
   await prisma.permission.createMany({ data: permissionData });
 
-  console.log('✅ Seeder dengan 2 user agent & merchant berhasil dijalankan!');
+  console.log(
+    '✅ Seeder dengan 3 user admin & 3 user agent & 3 user merchant berhasil dijalankan!',
+  );
 }
 
 main()

@@ -7,6 +7,7 @@ import {
   ApiBody,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { Role } from 'src/shared/constant/auth.constant';
@@ -16,6 +17,7 @@ import { UserProfileService } from './user-profile.service';
 import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { CreateAgentDto } from './dto/create-agent.dto';
+
 @Controller('user')
 export class UserController {
   constructor(
@@ -85,6 +87,7 @@ export class UserController {
   }
 
   @Public()
+  @ApiTags('Internal')
   @Get('internal/merchants-and-agents-by-ids')
   internalfindAllMerchantsAndAgentsByIds(
     @Query('merchantIds') merchantIds: string,
