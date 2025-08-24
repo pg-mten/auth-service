@@ -18,7 +18,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import { UpdateBalanceMerchantDto } from './dto/update-balance.dto';
 import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
 import { MerchantDto } from './dto/merchant.dto';
@@ -77,13 +76,5 @@ export class MerchantDetailController {
   ) {
     await this.service.update(id, userId, dto);
     return new ResponseDto({ status: ResponseStatus.UPDATED });
-  }
-
-  @Patch('update-balance/:id')
-  updateBalance(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateBalanceMerchantDto,
-  ) {
-    return this.service.updateBalance(id, dto);
   }
 }

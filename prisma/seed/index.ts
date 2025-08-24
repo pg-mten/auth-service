@@ -101,7 +101,7 @@ async function main() {
   console.log({ adminDetails });
 
   // === User Agent x2 ===
-  const [agentUser1, agentUser2] = await prisma.$transaction([
+  const [agentUser1, agentUser2, agentUser3] = await prisma.$transaction([
     prisma.user.create({
       data: {
         username: 'agent_user_1',
@@ -120,6 +120,15 @@ async function main() {
         createdBy: superAdminUser.id,
       },
     }),
+    prisma.user.create({
+      data: {
+        username: 'agent_user_3',
+        email: 'agent3@example.com',
+        password: await AuthHelper.hashPassword('password123'),
+        roleId: agentRole.id,
+        createdBy: superAdminUser.id,
+      },
+    }),
   ]);
 
   const agentDetails = await prisma.$transaction([
@@ -132,7 +141,6 @@ async function main() {
         bankName: 'BCA',
         accountNumber: '1111111111',
         accountHolderName: 'AGENT1',
-        balance: new Decimal(12100600.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -145,7 +153,18 @@ async function main() {
         bankName: 'BRI',
         accountNumber: '2222222222',
         accountHolderName: 'AGENT2',
-        balance: new Decimal(54500125.12),
+        createdBy: superAdminUser.id,
+      },
+    }),
+    prisma.agentDetail.create({
+      data: {
+        userId: agentUser3.id,
+        fullname: 'Agent Three',
+        address: 'Jl. Agent 3',
+        phone: '0833333333',
+        bankName: 'BRI',
+        accountNumber: '3333333333',
+        accountHolderName: 'AGENT3',
         createdBy: superAdminUser.id,
       },
     }),
@@ -204,7 +223,6 @@ async function main() {
         bankName: 'Mandiri',
         accountNumber: '111111111',
         accountHolderName: 'MERCHANT1',
-        balance: new Decimal(94130125.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -217,7 +235,6 @@ async function main() {
         bankName: 'BNI',
         accountNumber: '22222222',
         accountHolderName: 'MERCHANT2',
-        balance: new Decimal(97300125.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -230,7 +247,6 @@ async function main() {
         bankName: 'BNI',
         accountNumber: '333333333',
         accountHolderName: 'MERCHANT3',
-        balance: new Decimal(107300125.12),
         createdBy: superAdminUser.id,
       },
     }),
@@ -243,7 +259,6 @@ async function main() {
         bankName: 'BNI',
         accountNumber: '444444444',
         accountHolderName: 'MERCHANT4',
-        balance: new Decimal(45232789.12),
         createdBy: superAdminUser.id,
       },
     }),

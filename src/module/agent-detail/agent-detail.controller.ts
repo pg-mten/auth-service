@@ -20,7 +20,6 @@ import {
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
-import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
 import { AgentDto } from './dto/agent.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { Public } from '../auth/decorator/public.decorator';
@@ -74,14 +73,5 @@ export class AgentDetailController {
   ) {
     await this.service.update(id, userId, dto);
     return new ResponseDto({ status: ResponseStatus.UPDATED });
-  }
-
-  @Patch('update-balance/:id')
-  updateBalance(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateBalanceAgentDto,
-    @CurrentUser('id') userId: number,
-  ) {
-    return this.service.updateBalance(+id, userId, dto);
   }
 }

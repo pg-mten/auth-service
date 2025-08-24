@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
-import { UpdateBalanceAgentDto } from './dto/update-balance.dto';
 import { AgentDto } from './dto/agent.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
 import { AgentNameDto } from './dto/agent-name.dto';
@@ -86,14 +85,6 @@ export class AgentDetailService {
       data: {
         ...filterDto,
       },
-    });
-  }
-
-  async updateBalance(id: number, userId: number, dto: UpdateBalanceAgentDto) {
-    const { balance } = dto;
-    return await this.prisma.agentDetail.update({
-      where: { id },
-      data: { balance },
     });
   }
 }

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
-import { UpdateBalanceMerchantDto } from './dto/update-balance.dto';
 import { MerchantDto } from './dto/merchant.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
 import { MerchantNameDto } from './dto/merchant-names.dto';
@@ -85,16 +84,6 @@ export class MerchantDetailService {
       where: { id },
       data: {
         ...filterDto,
-      },
-    });
-  }
-
-  async updateBalance(id: number, dto: UpdateBalanceMerchantDto) {
-    const { balance } = dto;
-    return await this.prisma.merchantDetail.update({
-      where: { id },
-      data: {
-        balance,
       },
     });
   }
