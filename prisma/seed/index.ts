@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
 import { Role } from '../../src/shared/constant/auth.constant';
-import Decimal from 'decimal.js';
 
 const prisma = new PrismaClient();
 
@@ -323,7 +322,7 @@ async function main() {
   await prisma.permission.createMany({ data: permissionData });
 
   console.log(
-    '✅ Seeder dengan 3 user admin & 3 user agent & 3 user merchant berhasil dijalankan!',
+    '✅ Seeder dengan 3 user admin & 3 user agent & 4 user merchant berhasil dijalankan!',
   );
 }
 
