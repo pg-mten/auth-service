@@ -1,31 +1,24 @@
-# Gunakan Node.js base image ringan
-FROM node:20-alpine AS builder
-
+# Gunakan base image Node.js
+FROM node:18 AS builder
 WORKDIR /app
 
-# Copy package.json & package-lock.json dulu (optimasi cache)
-COPY package*.json ./
+# Copy file yang diperlukan
+COPY package.json package-lock.json ./
+RUN npm install --only=production
 
-# Install dependency
-RUN npm ci
-
-# Copy semua source code
+# Copy source code
 COPY . .
 
-# Build project (misalnya NestJS)
+# Build aplikasi
 RUN npm run build
 
-# Stage kedua untuk image lebih kecil
-FROM node:20-alpine AS runner
+# Gunakan image yang lebih ringan untuk production
+FROM node:18-alpine
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Copy hasil build dari tahap sebelumnya
+COPY --from=builder /app ./
+RUN npm install --only=production
 
-# Copy hanya file yang dibutuhkan
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 3000
-
-CMD ["node", "dist/main.js"]
+# Jalankan aplikasi
+CMD ["npm", "run", "start:prod"]
