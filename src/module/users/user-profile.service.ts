@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role } from 'src/shared/constant/auth.constant';
@@ -12,7 +8,7 @@ import { ProfileAgentDetailDto } from './dto/profile-agent.dto';
 import { ProfieAdminDetailDto } from './dto/profile-admin.dto';
 import { CryptoHelper } from 'src/shared/helper/crypto.helper';
 import { DateHelper } from 'src/shared/helper/date.helper';
-import * as crypto from 'crypto';
+
 @Injectable()
 export class UserProfileService {
   constructor(private readonly prisma: PrismaService) {}

@@ -6,6 +6,9 @@ export class ProfileMerchantDetailDto {
     DtoHelper.assign(this, data);
   }
 
+  @ApiProperty({ type: Number })
+  id: number;
+
   @ApiProperty({ type: String })
   businessName: string;
 
