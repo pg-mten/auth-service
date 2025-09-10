@@ -67,7 +67,6 @@ export class UserController {
   }
 
   @Post('admin/register-merchant')
-  @Roles(Role.ADMIN_SUPER, Role.ADMIN_MERCHANT, Role.ADMIN_ROLE_PERMISSION)
   @ApiOperation({ summary: 'Admin Register Merchant' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateMerchantDto })
@@ -77,7 +76,6 @@ export class UserController {
   }
 
   @Post('admin/register-agent')
-  @Roles(Role.ADMIN_SUPER, Role.ADMIN_AGENT, Role.ADMIN_ROLE_PERMISSION)
   @ApiOperation({ summary: 'Admin Register Agent' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateAgentDto })
