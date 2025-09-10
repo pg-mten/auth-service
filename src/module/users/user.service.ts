@@ -82,6 +82,7 @@ export class UserService {
         accountNumber,
         accountHolderName,
       } = body;
+
       const merchant = await tx.merchantDetail.create({
         data: {
           userId: user.id,
@@ -97,7 +98,7 @@ export class UserService {
       console.log({ user, merchant });
       const { settlementInterval } = body;
       try {
-        const res = await axios.post(`${URL_CONFIG}/merchant`, {
+        const res = await axios.post(`${URL_CONFIG}/merchant/internal`, {
           id: merchant.id,
           settlementInterval: settlementInterval,
         });

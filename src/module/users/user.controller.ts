@@ -70,7 +70,9 @@ export class UserController {
   @ApiOperation({ summary: 'Admin Register Merchant' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateMerchantDto })
+  @Public()
   async registerMerchant(@Body() body: CreateMerchantDto) {
+    console.log({ body });
     await this.userService.registerMerchant(body);
     return new ResponseDto({ status: ResponseStatus.CREATED });
   }
