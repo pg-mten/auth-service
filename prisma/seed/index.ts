@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
-import { Role } from '../../src/shared/constant/auth.constant';
+import { ROLE } from 'src/shared/constant/auth.constant';
 
 const prisma = new PrismaClient();
 
@@ -21,7 +21,7 @@ async function main() {
     agentRole,
     merchantRole,
   ] = await prisma.$transaction(
-    Object.values(Role).map((role) => {
+    Object.values(ROLE).map((role) => {
       return prisma.role.create({ data: { name: role } });
     }),
   );

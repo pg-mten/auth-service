@@ -11,8 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { AuthDto } from './dto/auth.dto';
-import { CurrentUser } from './decorator/current-user.decorator';
 import { AuthInfoDto } from './dto/auth-info.dto';
+import { CurrentAuthInfo } from './decorator/current-auth-info.decorator';
 
 @Controller()
 export class AuthController {
@@ -27,7 +27,7 @@ export class AuthController {
 
   @Get('/authInfo')
   @ApiBearerAuth()
-  token(@CurrentUser() authInfo: AuthInfoDto) {
+  token(@CurrentAuthInfo() authInfo: AuthInfoDto) {
     return authInfo;
   }
 

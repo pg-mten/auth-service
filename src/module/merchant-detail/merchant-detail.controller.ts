@@ -1,14 +1,12 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
 import { MerchantDetailService } from './merchant-detail.service';
-import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
 import {
   ApiBearerAuth,
@@ -17,7 +15,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
 import { MerchantDto } from './dto/merchant.dto';
@@ -30,14 +27,6 @@ import { Public } from '../auth/decorator/public.decorator';
 @Controller('merchant-detail')
 export class MerchantDetailController {
   constructor(private readonly service: MerchantDetailService) {}
-
-  @Post()
-  create(
-    @Body() dto: CreateMerchantDetailDto,
-    @CurrentUser('id') userId: number,
-  ) {
-    return this.service.create(userId, dto);
-  }
 
   // TODO Pagination
   @Get()
@@ -72,9 +61,8 @@ export class MerchantDetailController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateMerchantDetailDto,
-    @CurrentUser('id') userId: number,
   ) {
-    await this.service.update(id, userId, dto);
+    await this.service.update(id, dto);
     return new ResponseDto({ status: ResponseStatus.UPDATED });
   }
 }

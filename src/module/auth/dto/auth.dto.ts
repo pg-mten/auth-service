@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AuthInfoDto } from './auth-info.dto';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 export class TokenPayload {
   id: number;
@@ -12,7 +13,10 @@ export class TokenPayload {
 }
 
 export class AuthDto {
-  constructor() {}
+  constructor(data: AuthDto) {
+    DtoHelper.assign(this, data);
+  }
+
   @ApiProperty()
   token: string;
 

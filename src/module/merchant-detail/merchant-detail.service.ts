@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateMerchantDetailDto } from './dto/create-merchant-detail.dto';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
 import { MerchantDto } from './dto/merchant.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
@@ -9,15 +8,6 @@ import { MerchantNameDto } from './dto/merchant-names.dto';
 @Injectable()
 export class MerchantDetailService {
   constructor(private readonly prisma: PrismaService) {}
-
-  async create(userId: number, dto: CreateMerchantDetailDto) {
-    return await this.prisma.merchantDetail.create({
-      data: {
-        ...dto,
-        userId: userId,
-      },
-    });
-  }
 
   async findAll() {
     const merchants = await this.prisma.merchantDetail.findMany({
@@ -77,7 +67,7 @@ export class MerchantDetailService {
     });
   }
 
-  async update(id: number, userId: number, dto: UpdateMerchantDetailDto) {
+  async update(id: number, dto: UpdateMerchantDetailDto) {
     await this.findOneThrow(id); // ensure exists
     const filterDto = DtoHelper.filter(dto);
     return this.prisma.merchantDetail.update({

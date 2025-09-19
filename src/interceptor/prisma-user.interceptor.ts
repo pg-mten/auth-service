@@ -18,7 +18,7 @@ export class PrismaUserInterceptor implements NestInterceptor {
     const authInfo = (request as Request).authInfo;
     console.log('PrismaUserInterceptor.intercept');
     console.log({ authInfo });
-    this.prisma.setUserId(authInfo?.id ?? null);
+    this.prisma.setUserId(authInfo?.userId ?? null);
     return next.handle();
   }
 }

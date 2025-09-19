@@ -1,24 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 export class AuthInfoDto {
-  @Expose()
-  @ApiProperty()
-  id: number;
+  constructor(data: AuthInfoDto) {
+    DtoHelper.assign(this, data);
+  }
 
-  @Expose()
   @ApiProperty()
-  email: string;
+  // @Expose()
+  userId: number;
 
-  @Expose()
   @ApiProperty()
-  firstName: string;
-
-  @Expose()
-  @ApiProperty()
-  lastName: string;
-
-  @Expose()
-  @ApiProperty()
+  // @Expose()
   role: string;
+
+  @ApiProperty()
+  // @Expose()
+  profileId: number;
 }

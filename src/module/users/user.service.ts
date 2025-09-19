@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateMerchantDto } from './dto/create-merchant.dto';
+import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
-import { Role } from 'src/shared/constant/auth.constant';
-import { CreateAgentDto } from './dto/create-agent.dto';
+import { ROLE } from 'src/shared/constant/auth.constant';
+import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { MerchantDetailService } from '../merchant-detail/merchant-detail.service';
 import { AgentDetailService } from '../agent-detail/agent-detail.service';
 import { AgentConfigClient } from 'src/microservice/config/agent.config.client';
@@ -39,7 +39,7 @@ export class UserService {
 
   async findOneByAuthInfoThrow(authInfo: AuthInfoDto) {
     return this.prisma.user.findUniqueOrThrow({
-      where: { id: authInfo.id },
+      where: { id: authInfo.userId },
       include: { role: true },
     });
   }
@@ -71,7 +71,7 @@ export class UserService {
   async registerMerchant(body: CreateMerchantDto) {
     return await this.prisma.$transaction(async (tx) => {
       const role = await tx.role.findFirstOrThrow({
-        where: { name: Role.MERCHANT },
+        where: { name: ROLE.MERCHANT },
       });
       const { username, email, password } = body;
       const user = await tx.user.create({
@@ -121,7 +121,7 @@ export class UserService {
   async registerAgent(body: CreateAgentDto) {
     return await this.prisma.$transaction(async (tx) => {
       const role = await tx.role.findFirstOrThrow({
-        where: { name: Role.AGENT },
+        where: { name: ROLE.AGENT },
       });
       const { username, email, password } = body;
       const user = await tx.user.create({

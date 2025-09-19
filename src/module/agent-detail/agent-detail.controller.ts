@@ -1,14 +1,12 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
 import { AgentDetailService } from './agent-detail.service';
-import { CreateAgentDetailDto } from './dto/create-agent-detail.dto';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
 import {
   ApiBearerAuth,
@@ -17,9 +15,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import { CheckPolicies } from '../casl/policy.decorator';
-import { AppAbility } from '../casl/casl-ability.factory';
 import { AgentDto } from './dto/agent.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { Public } from '../auth/decorator/public.decorator';
@@ -30,12 +25,6 @@ import { AgentNameDto } from './dto/agent-name.dto';
 @Controller('agent-detail')
 export class AgentDetailController {
   constructor(private readonly service: AgentDetailService) {}
-
-  @Post()
-  // @CheckPolicies((ability: AppAbility) => ability.can('create', 'AgentDetail'))
-  create(@Body() dto: CreateAgentDetailDto, @CurrentUser('id') userId: number) {
-    return this.service.create(userId, dto);
-  }
 
   // TODO Pagination
   @Get()
@@ -69,9 +58,8 @@ export class AgentDetailController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateAgentDetailDto,
-    @CurrentUser('id') userId: number,
   ) {
-    await this.service.update(id, userId, dto);
+    await this.service.update(id, dto);
     return new ResponseDto({ status: ResponseStatus.UPDATED });
   }
 }

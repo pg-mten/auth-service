@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
-import { EmailUnique } from '../validator/email-unique.validator';
-import { UsernameUnique } from '../validator/username-unique.validator';
+import { IsString } from 'class-validator';
+import { EmailUnique } from '../../users/validator/email-unique.validator';
+import { UsernameUnique } from '../../users/validator/username-unique.validator';
 
-export class CreateMerchantDto {
+export class CreateAgentDto {
   @UsernameUnique()
   @IsString()
   @ApiProperty()
@@ -20,15 +20,15 @@ export class CreateMerchantDto {
 
   @IsString()
   @ApiProperty()
-  businessName: string;
-
-  @IsString()
-  @ApiProperty()
-  npwp: string;
+  fullname: string;
 
   @IsString()
   @ApiProperty()
   address: string;
+
+  @IsString()
+  @ApiProperty()
+  phone: string;
 
   @IsString()
   @ApiProperty()
@@ -41,9 +41,4 @@ export class CreateMerchantDto {
   @IsString()
   @ApiProperty()
   accountHolderName: string;
-
-  @IsNumber()
-  @IsOptional()
-  @ApiProperty({ type: Number, required: false })
-  settlementInterval: number | null;
 }

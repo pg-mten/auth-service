@@ -8,7 +8,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -17,19 +16,20 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../auth/decorator/roles.decorator';
-import { Role } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { Public } from '../auth/decorator/public.decorator';
 import { UserProfileService } from './user-profile.service';
-import { CreateMerchantDto } from './dto/create-merchant.dto';
+import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
-import { CreateAgentDto } from './dto/create-agent.dto';
+import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SERVICES } from 'src/shared/constant/client.constant';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
 import { AuthInfoDto } from '../auth/dto/auth-info.dto';
+import { CurrentAuthInfo } from '../auth/decorator/current-auth-info.decorator';
 
 @Controller('user')
 export class UserController {
@@ -41,7 +41,7 @@ export class UserController {
   @Get('/generate-private-key')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Generate Private Key' })
-  generatePrivateKey(@CurrentUser() authInfo: AuthInfoDto) {
+  generatePrivateKey(@CurrentAuthInfo() authInfo: AuthInfoDto) {
     return this.userProfileService.generatePrivateKey(authInfo);
   }
 
@@ -61,15 +61,15 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Profile' })
   @ApiOkResponse({ type: ProfileDto })
-  profile(@CurrentUser() authInfo: AuthInfoDto) {
+  profile(@CurrentAuthInfo() authInfo: AuthInfoDto) {
     console.log({ authInfo });
     return this.userProfileService.profile(authInfo);
   }
 
   @Get('role')
   @ApiBearerAuth()
-  @Roles(Role.ADMIN_SUPER)
-  roles(@CurrentUser() authInfo: AuthInfoDto) {
+  @Roles(ROLE.ADMIN_SUPER)
+  roles(@CurrentAuthInfo() authInfo: AuthInfoDto) {
     return authInfo;
   }
 

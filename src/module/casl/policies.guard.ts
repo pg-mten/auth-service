@@ -5,6 +5,7 @@ import { AppAbility } from './casl-ability.factory';
 import { CHECK_POLICIES_KEY } from './policy.decorator';
 import { PolicyHandler } from './types/policy-handler.type';
 import { IS_PUBLIC_KEY } from '../auth/decorator/public.decorator';
+import { Request } from 'express';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
@@ -38,8 +39,8 @@ export class PoliciesGuard implements CanActivate {
     if (handlers.length === 0) return true;
 
     const req = context.switchToHttp().getRequest();
-    const user = req.user;
-    const ability = await this.caslCache.getAbility(user.id);
+    const authInfo = (req as Request).authInfo;
+    const ability = await this.caslCache.getAbility(authInfo.userId);
 
     return handlers.every((handler) =>
       this.execPolicyHandler(handler, ability),

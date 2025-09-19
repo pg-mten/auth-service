@@ -1,15 +1,15 @@
 export const JWT = {
   accessToken: {
-    secret: process.env.JWT_ACCESS_TOKEN_SECRET ?? '',
-    expireIn: 3600 * 12, // 12 Hour Dev
+    secret: process.env.JWT_ACCESS_TOKEN_SECRET || '',
+    expireIn: parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRE || '43200'), // 12 Hour Dev
   },
   refreshToken: {
-    secret: process.env.JWT_REFRESH_TOKEN_SECRET ?? '',
-    expireIn: 3600 * 24, // 24 Hour Dev
+    secret: process.env.JWT_REFRESH_TOKEN_SECRET || '',
+    expireIn: parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE || '86400'), // 24 Hour Dev
   },
 };
 
-export enum Role {
+export enum ROLE {
   ADMIN_SUPER = 'ADMIN_SUPER',
   ADMIN_ROLE_PERMISSION = 'ADMIN_ROLE_PERMISSION',
   ADMIN_AGENT = 'ADMIN_AGENT',

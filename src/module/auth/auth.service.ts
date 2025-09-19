@@ -4,13 +4,15 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
 import { AuthDto } from './dto/auth.dto';
-import { plainToClass, instanceToPlain } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 import { AuthInfoDto } from './dto/auth-info.dto';
+import { UserProfileService } from '../users/user-profile.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private readonly userProfileService: UserProfileService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -23,11 +25,17 @@ export class AuthService {
           user.password,
           password,
         );
-        if (user && isPasswordVerify) {
-          const authInfoDto = plainToClass(AuthInfoDto, user, {
-            excludeExtraneousValues: true,
+        if (isPasswordVerify) {
+          const profileId =
+            await this.userProfileService.findProfileIdByUserIdAndRole(
+              user.id,
+              user.role.name,
+            );
+          const authInfoDto = new AuthInfoDto({
+            userId: user.id,
+            profileId: profileId,
+            role: user.role.name,
           });
-          authInfoDto.role = user.role.name;
           return authInfoDto;
         }
       }
@@ -41,12 +49,11 @@ export class AuthService {
 
   async login(authInfoDto: AuthInfoDto): Promise<AuthDto> {
     console.log({ authInfoDto });
-    // const payload: TokenPayload = plainToClass(TokenPayload, authInfoDto);
     const payload = instanceToPlain(authInfoDto);
     const jwtToken = await this.jwtService.signAsync(payload);
-    return {
+    return new AuthDto({
       token: jwtToken,
       authInfo: authInfoDto,
-    } as AuthDto;
+    });
   }
 }
