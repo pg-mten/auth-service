@@ -15,7 +15,7 @@ export class PrismaUserInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const authInfo = (request as Request).user;
+    const authInfo = (request as Request).authInfo;
     console.log('PrismaUserInterceptor.intercept');
     console.log({ authInfo });
     this.prisma.setUserId(authInfo?.id ?? null);

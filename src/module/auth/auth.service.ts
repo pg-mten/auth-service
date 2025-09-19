@@ -3,8 +3,9 @@ import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
-import { AuthDto, AuthInfoDto } from './dto/auth.dto';
+import { AuthDto } from './dto/auth.dto';
 import { plainToClass, instanceToPlain } from 'class-transformer';
+import { AuthInfoDto } from './dto/auth-info.dto';
 
 @Injectable()
 export class AuthService {

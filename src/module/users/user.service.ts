@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { AuthInfoDto } from '../auth/dto/auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
@@ -13,6 +12,7 @@ import { MerchantSystemDto } from 'src/microservice/auth/dto-system/merchant.sys
 import { AgentSystemDto } from 'src/microservice/auth/dto-system/agent.system.dto';
 import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
 import { MerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/merchants-and-agents-by-ids.system.dto';
+import { AuthInfoDto } from '../auth/dto/auth-info.dto';
 
 @Injectable()
 export class UserService {

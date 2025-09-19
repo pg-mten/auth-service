@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import { AuthInfoDto } from '../auth/dto/auth.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -30,6 +29,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SERVICES } from 'src/shared/constant/client.constant';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
+import { AuthInfoDto } from '../auth/dto/auth-info.dto';
 
 @Controller('user')
 export class UserController {

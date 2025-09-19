@@ -10,8 +10,9 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
-import { AuthDto, AuthInfoDto } from './dto/auth.dto';
+import { AuthDto } from './dto/auth.dto';
 import { CurrentUser } from './decorator/current-user.decorator';
+import { AuthInfoDto } from './dto/auth-info.dto';
 
 @Controller()
 export class AuthController {
@@ -38,6 +39,6 @@ export class AuthController {
   @ApiCreatedResponse({ type: AuthDto })
   async login(@Req() req: Request) {
     console.log({ req });
-    return this.authService.login(req.user);
+    return this.authService.login(req.authInfo);
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { AuthInfoDto } from './auth-info.dto';
 
 export class TokenPayload {
   id: number;
@@ -9,28 +9,6 @@ export class TokenPayload {
   firstName: string;
 
   lastName: string;
-}
-
-export class AuthInfoDto {
-  @Expose()
-  @ApiProperty()
-  id: number;
-
-  @Expose()
-  @ApiProperty()
-  email: string;
-
-  @Expose()
-  @ApiProperty()
-  firstName: string;
-
-  @Expose()
-  @ApiProperty()
-  lastName: string;
-
-  @Expose()
-  @ApiProperty()
-  role: string;
 }
 
 export class AuthDto {
