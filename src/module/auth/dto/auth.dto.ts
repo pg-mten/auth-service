@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AuthInfoDto } from './auth-info.dto';
+import { AuthInfoDto } from '../../../microservice/auth/dto/auth-info.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
 
 export class TokenPayload {

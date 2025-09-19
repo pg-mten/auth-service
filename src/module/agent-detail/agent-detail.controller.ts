@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { AgentDto } from './dto/agent.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
-import { Public } from '../auth/decorator/public.decorator';
+import { Public } from '../../microservice/auth/decorator/public.decorator';
 import { AgentNameDto } from './dto/agent-name.dto';
 
 @ApiTags('Agent Detail')

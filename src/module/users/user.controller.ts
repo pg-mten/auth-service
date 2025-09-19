@@ -15,10 +15,10 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Roles } from '../auth/decorator/roles.decorator';
+import { Roles } from '../../microservice/auth/decorator/roles.decorator';
 import { ROLE } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
-import { Public } from '../auth/decorator/public.decorator';
+import { Public } from '../../microservice/auth/decorator/public.decorator';
 import { UserProfileService } from './user-profile.service';
 import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
@@ -28,8 +28,8 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SERVICES } from 'src/shared/constant/client.constant';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
-import { AuthInfoDto } from '../auth/dto/auth-info.dto';
-import { CurrentAuthInfo } from '../auth/decorator/current-auth-info.decorator';
+import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
+import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
 
 @Controller('user')
 export class UserController {

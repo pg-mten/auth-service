@@ -7,7 +7,7 @@ import { ProfileAgentDetailDto } from './dto/profile-agent.dto';
 import { ProfieAdminDetailDto } from './dto/profile-admin.dto';
 import { CryptoHelper } from 'src/shared/helper/crypto.helper';
 import { DateHelper } from 'src/shared/helper/date.helper';
-import { AuthInfoDto } from '../auth/dto/auth-info.dto';
+import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { ResponseException } from 'src/exception/response.exception';
 
 @Injectable()

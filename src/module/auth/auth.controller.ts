@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Public } from './decorator/public.decorator';
+import { Public } from '../../microservice/auth/decorator/public.decorator';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Request } from 'express';
 import {
@@ -11,8 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { AuthDto } from './dto/auth.dto';
-import { AuthInfoDto } from './dto/auth-info.dto';
-import { CurrentAuthInfo } from './decorator/current-auth-info.decorator';
+import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
+import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
 
 @Controller()
 export class AuthController {

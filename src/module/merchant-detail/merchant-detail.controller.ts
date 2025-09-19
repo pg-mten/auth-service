@@ -20,7 +20,7 @@ import { AppAbility } from '../casl/casl-ability.factory';
 import { MerchantDto } from './dto/merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { MerchantNameDto } from './dto/merchant-names.dto';
-import { Public } from '../auth/decorator/public.decorator';
+import { Public } from '../../microservice/auth/decorator/public.decorator';
 
 @ApiTags('Merchant Detail')
 @ApiBearerAuth()

@@ -6,16 +6,15 @@ import { FeeCalculateConfigClient } from './config/fee-calculate.config.client';
 import { UserAuthClient } from './auth/user.auth.client';
 import { AgentConfigClient } from './config/agent.config.client';
 import { MerchantConfigClient } from './config/merchant.config.client';
+import { JwtModule } from '@nestjs/jwt';
+import { JWT } from 'src/shared/constant/auth.constant';
+import { JwtStrategy } from './auth/strategy/jwt.strategy';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
+import { RolesGuard } from './auth/guard/roles.guard';
 
 @Global()
 @Module({
-  providers: [
-    FeeCalculateConfigClient,
-    UserAuthClient,
-    AgentConfigClient,
-    MerchantConfigClient,
-    SettlementSettleReconClient,
-  ],
   exports: [
     FeeCalculateConfigClient,
     UserAuthClient,
@@ -23,7 +22,33 @@ import { MerchantConfigClient } from './config/merchant.config.client';
     MerchantConfigClient,
     SettlementSettleReconClient,
   ],
+  providers: [
+    JwtStrategy,
+
+    /// Register Client
+    FeeCalculateConfigClient,
+    UserAuthClient,
+    AgentConfigClient,
+    MerchantConfigClient,
+    SettlementSettleReconClient,
+
+    /// Guard
+    {
+      provide: APP_GUARD, // Highest priority
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD, // Lowest priority
+      useClass: RolesGuard,
+    },
+  ],
+
   imports: [
+    JwtModule.register({
+      secret: JWT.accessToken.secret,
+      signOptions: { expiresIn: JWT.accessToken.expireIn },
+    }),
+
     /// Register Client
     ClientsModule.register([
       {

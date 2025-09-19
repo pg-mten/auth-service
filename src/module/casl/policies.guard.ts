@@ -4,7 +4,7 @@ import { CaslCacheService } from './casl-cache.service';
 import { AppAbility } from './casl-ability.factory';
 import { CHECK_POLICIES_KEY } from './policy.decorator';
 import { PolicyHandler } from './types/policy-handler.type';
-import { IS_PUBLIC_KEY } from '../auth/decorator/public.decorator';
+import { IS_PUBLIC_KEY } from '../../microservice/auth/decorator/public.decorator';
 import { Request } from 'express';
 
 @Injectable()

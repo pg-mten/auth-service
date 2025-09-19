@@ -5,7 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
 import { AuthDto } from './dto/auth.dto';
 import { instanceToPlain } from 'class-transformer';
-import { AuthInfoDto } from './dto/auth-info.dto';
+import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { UserProfileService } from '../users/user-profile.service';
 
 @Injectable()

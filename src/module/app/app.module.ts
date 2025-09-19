@@ -15,7 +15,6 @@ import { ResponseExceptionFilter } from 'src/filter/response.exception.filter';
 import { InvalidRequestExceptionFilter } from 'src/filter/invalid-request.exception.filter';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { AuthModule } from '../auth/auth.module';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UserModule } from '../users/user.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
@@ -24,7 +23,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AgentDetailModule } from '../agent-detail/agent-detail.module';
 import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { RolesGuard } from '../auth/guard/roles.guard';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
@@ -84,14 +82,6 @@ import { MicroserviceModule } from 'src/microservice/microservice.module';
       inject: [PrismaService],
     },
     /// GUARD
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
     {
       provide: APP_GUARD,
       useClass: PoliciesGuard,
