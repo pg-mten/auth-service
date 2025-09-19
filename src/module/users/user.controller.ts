@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { AuthInfoDto } from '../auth/dto/auth.dto';
@@ -17,6 +25,11 @@ import { UserProfileService } from './user-profile.service';
 import { CreateMerchantDto } from './dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { CreateAgentDto } from './dto/create-agent.dto';
+import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { SERVICES } from 'src/shared/constant/client.constant';
+import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
+import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
 
 @Controller('user')
 export class UserController {
@@ -89,17 +102,22 @@ export class UserController {
   @Public()
   @ApiTags('Internal')
   @Get('internal/merchants-and-agents-by-ids')
-  internalfindAllMerchantsAndAgentsByIds(
-    @Query('merchantIds') merchantIds: string,
-    @Query('agentIds') agentIds: string,
+  findAllMerchantsAndAgentsByIds(
+    @Query() filter: FilterMerchantsAndAgentsByIdsSystemDto,
   ) {
-    console.log({ merchantIds, agentIds });
-    const merchantIdList = merchantIds.split(',').map(Number);
-    const agentIdList = agentIds.split(',').map(Number);
-    console.log({ merchantIdList, agentIdList });
-    return this.userService.internalfindAllMerchantsAndAgentsByIds(
-      merchantIdList,
-      agentIdList,
-    );
+    console.log({ filter });
+    return this.userService.findAllMerchantsAndAgentsByIds(filter);
+  }
+
+  @MessagePattern({
+    cmd: SERVICES.AUTH.cmd.find_all_merchants_and_agents_by_ids,
+  })
+  @UseInterceptors(ResponseInterceptor)
+  async findAllMerchantsAndAgentsByIdsTCP(
+    @Payload(CustomValidationPipe)
+    payload: FilterMerchantsAndAgentsByIdsSystemDto,
+  ) {
+    console.log({ payload });
+    return this.userService.findAllMerchantsAndAgentsByIds(payload);
   }
 }

@@ -7,10 +7,12 @@ import { Role } from 'src/shared/constant/auth.constant';
 import { CreateAgentDto } from './dto/create-agent.dto';
 import { MerchantDetailService } from '../merchant-detail/merchant-detail.service';
 import { AgentDetailService } from '../agent-detail/agent-detail.service';
-import { MerchantDto } from '../merchant-detail/dto/merchant.dto';
-import { AgentDto } from '../agent-detail/dto/agent.dto';
-import axios from 'axios';
-import { URL_CONFIG } from 'src/shared/constant/url.constant';
+import { AgentConfigClient } from 'src/microservice/config/agent.config.client';
+import { MerchantConfigClient } from 'src/microservice/config/merchant.config.client';
+import { MerchantSystemDto } from 'src/microservice/auth/dto-system/merchant.system.dto';
+import { AgentSystemDto } from 'src/microservice/auth/dto-system/agent.system.dto';
+import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
+import { MerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/merchants-and-agents-by-ids.system.dto';
 
 @Injectable()
 export class UserService {
@@ -18,6 +20,8 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly merchantService: MerchantDetailService,
     private readonly agentService: AgentDetailService,
+    private readonly agentConfigClient: AgentConfigClient,
+    private readonly merchantConfigClient: MerchantConfigClient,
   ) {}
 
   async findOneByEmailThrow(email: string) {
@@ -46,18 +50,22 @@ export class UserService {
     });
   }
 
-  async internalfindAllMerchantsAndAgentsByIds(
-    merchantIdList: number[],
-    agentIdList: number[],
-  ): Promise<{ merchants: MerchantDto[]; agents: AgentDto[] }> {
+  async findAllMerchantsAndAgentsByIds(
+    filter: FilterMerchantsAndAgentsByIdsSystemDto,
+  ): Promise<MerchantsAndAgentsByIdsSystemDto> {
+    const { agentIds, merchantIds } = filter;
+    const merchantIdList = merchantIds?.split(',').map(Number) ?? [];
+    const agentIdList = agentIds?.split(',').map(Number) ?? [];
     const [merchants, agents] = await Promise.all([
       this.merchantService.findIds(merchantIdList),
       this.agentService.findIds(agentIdList),
     ]);
-    return {
-      merchants,
-      agents,
-    };
+    return new MerchantsAndAgentsByIdsSystemDto({
+      merchants: merchants.map(
+        (merchant) => new MerchantSystemDto({ ...merchant }),
+      ),
+      agents: agents.map((agent) => new AgentSystemDto({ ...agent })),
+    });
   }
 
   async registerMerchant(body: CreateMerchantDto) {
@@ -98,7 +106,7 @@ export class UserService {
       console.log({ user, merchant });
       const { settlementInterval } = body;
       try {
-        const res = await axios.post(`${URL_CONFIG}/merchant/internal`, {
+        const res = await this.merchantConfigClient.createTCP({
           id: merchant.id,
           settlementInterval: settlementInterval,
         });
@@ -147,9 +155,7 @@ export class UserService {
       console.log({ user, agent });
 
       try {
-        const res = await axios.post(`${URL_CONFIG}/agent`, {
-          id: agent.id,
-        });
+        const res = await this.agentConfigClient.createTCP({ id: agent.id });
         console.log(res.data);
       } catch (error) {
         console.log(error);
