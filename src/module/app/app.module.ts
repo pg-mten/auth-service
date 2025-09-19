@@ -27,6 +27,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { CaslModule } from '../casl/casl.module';
+import { MicroserviceModule } from 'src/microservice/microservice.module';
 
 @Module({
   imports: [
@@ -43,6 +44,8 @@ import { CaslModule } from '../casl/casl.module';
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     CaslModule,
+
+    MicroserviceModule,
   ],
   controllers: [AppController],
   providers: [

@@ -10,7 +10,6 @@ import { MerchantConfigClient } from './config/merchant.config.client';
 @Global()
 @Module({
   providers: [
-    SettlementSettleReconClient,
     FeeCalculateConfigClient,
     UserAuthClient,
     AgentConfigClient,
@@ -18,7 +17,6 @@ import { MerchantConfigClient } from './config/merchant.config.client';
     SettlementSettleReconClient,
   ],
   exports: [
-    SettlementSettleReconClient,
     FeeCalculateConfigClient,
     UserAuthClient,
     AgentConfigClient,
