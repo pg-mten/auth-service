@@ -12,6 +12,7 @@ import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { RolesGuard } from './auth/guard/roles.guard';
+import { MerchantSignatureAuthClient } from './auth/merchant-signature.auth.client';
 
 @Global()
 @Module({
@@ -21,26 +22,28 @@ import { RolesGuard } from './auth/guard/roles.guard';
     AgentConfigClient,
     MerchantConfigClient,
     SettlementSettleReconClient,
+    MerchantSignatureAuthClient,
   ],
   providers: [
-    JwtStrategy,
-
     /// Register Client
     FeeCalculateConfigClient,
     UserAuthClient,
     AgentConfigClient,
     MerchantConfigClient,
     SettlementSettleReconClient,
+    MerchantSignatureAuthClient,
 
+    /// TODO Non aktifkan dulu bolooo
+    // JwtStrategy,
     /// Guard
-    {
-      provide: APP_GUARD, // Highest priority
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD, // Lowest priority
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD, // Highest priority
+    //   useClass: JwtAuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD, // Lowest priority
+    //   useClass: RolesGuard,
+    // },
   ],
 
   imports: [

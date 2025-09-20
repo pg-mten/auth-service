@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Post,
   Query,
   UseInterceptors,
@@ -37,25 +36,6 @@ export class UserController {
     private readonly userService: UserService,
     private readonly userProfileService: UserProfileService,
   ) {}
-
-  @Get('/generate-private-key')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Generate Private Key' })
-  generatePrivateKey(@CurrentAuthInfo() authInfo: AuthInfoDto) {
-    return this.userProfileService.generatePrivateKey(authInfo);
-  }
-
-  @Get('/decrypt')
-  @Public()
-  decyrptPrivateKey(
-    @Headers('x-merchant-id') merchantId: string,
-    @Headers('x-signature') signature: string,
-  ) {
-    return this.userProfileService.validateSignatureRequest(
-      +merchantId,
-      signature,
-    );
-  }
 
   @Get('/profile')
   @ApiBearerAuth()
