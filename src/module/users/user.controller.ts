@@ -24,7 +24,7 @@ import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { SERVICES } from 'src/shared/constant/client.constant';
+import { SERVICES } from 'src/microservice/client.constant';
 import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
