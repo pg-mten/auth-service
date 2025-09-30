@@ -31,12 +31,6 @@ export class UserService {
     });
   }
 
-  async findOneByUsernameThrow(username: string) {
-    return await this.prisma.user.findFirstOrThrow({
-      where: { username },
-    });
-  }
-
   async findOneByAuthInfoThrow(authInfo: AuthInfoDto) {
     return this.prisma.user.findUniqueOrThrow({
       where: { id: authInfo.userId },
@@ -73,33 +67,18 @@ export class UserService {
       const role = await tx.role.findFirstOrThrow({
         where: { name: ROLE.MERCHANT },
       });
-      const { username, email, password } = body;
       const user = await tx.user.create({
         data: {
           roleId: role.id,
-          username,
-          email,
-          password: await AuthHelper.hashPassword(password),
+          email: body.email,
+          password: await AuthHelper.hashPassword(body.password),
         },
       });
-      const {
-        businessName,
-        npwp,
-        address,
-        bankName,
-        accountNumber,
-        accountHolderName,
-      } = body;
 
       const merchant = await tx.merchantDetail.create({
         data: {
           userId: user.id,
-          businessName,
-          npwp,
-          address,
-          bankName,
-          accountNumber,
-          accountHolderName,
+          ...body,
         },
       });
 
@@ -123,11 +102,10 @@ export class UserService {
       const role = await tx.role.findFirstOrThrow({
         where: { name: ROLE.AGENT },
       });
-      const { username, email, password } = body;
+      const { email, password } = body;
       const user = await tx.user.create({
         data: {
           roleId: role.id,
-          username,
           email,
           password: await AuthHelper.hashPassword(password),
         },

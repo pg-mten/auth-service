@@ -10,9 +10,6 @@ export class ProfileDto {
   }
 
   @ApiProperty({ type: String })
-  username: string;
-
-  @ApiProperty({ type: String })
   email: string;
 
   @ApiProperty({ type: ProfileAgentDetailDto, required: false })

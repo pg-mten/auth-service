@@ -54,7 +54,6 @@ model Permission {
 
 model User {
   id       Int    @unique @default(autoincrement())
-  username String @unique
   email    String @unique @db.VarChar(255)
   password String
 
@@ -93,13 +92,13 @@ model AdminDetail {
 }
 
 model AgentDetail {
-  id                Int     @id @default(autoincrement())
+  id                Int    @id @default(autoincrement())
   fullname          String
   address           String
   phone             String
-  bankName          String  @db.VarChar(100) // contoh: "BCA", "BRI"
-  accountNumber     String  @db.VarChar(50)
-  accountHolderName String  @db.VarChar(100)
+  bankName          String @db.VarChar(100) // contoh: "BCA", "BRI"
+  accountNumber     String @db.VarChar(50)
+  accountHolderName String @db.VarChar(100)
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
@@ -115,17 +114,29 @@ model AgentDetail {
 
 model MerchantDetail {
   id                Int     @id @default(autoincrement())
+  ownerName         String
   businessName      String
+  brandName         String
+  phoneNumber       String
+  nik               String
+  ktpImage          String?
   npwp              String
   address           String
-  bankName          String  @db.VarChar(100)
-  accountNumber     String  @db.VarChar(50)
-  accountHolderName String  @db.VarChar(100)
+  province          String
+  regency           String // Kabupaten / Kota
+  district          String // Kecamatan
+  village           String // Kelurahan
+  postalCode        String
+  bankName          String
+  accountNumber     String
+  accountHolderName String
+  siupFile          String?
+  coordinate        String?
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
 
-  privateKey String?
+  privateKey          String?
   timestampPrivateKey DateTime?
 
   createdAt DateTime  @default(now())

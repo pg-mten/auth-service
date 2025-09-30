@@ -1,14 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 import { EmailUnique } from '../../users/validator/email-unique.validator';
-import { UsernameUnique } from '../../users/validator/username-unique.validator';
 
 export class CreateAgentDto {
-  @UsernameUnique()
-  @IsString()
-  @ApiProperty()
-  username: string;
-
   @EmailUnique()
   @IsString()
   @ApiProperty()

@@ -29,7 +29,6 @@ async function main() {
   // Super Admin User
   const superAdminUser = await prisma.user.create({
     data: {
-      username: 'superadmin',
       email: 'superadmin@example.com',
       password: await AuthHelper.hashPassword('password123'),
       roleId: superAdmin.id,
@@ -41,7 +40,6 @@ async function main() {
     await prisma.$transaction([
       prisma.user.create({
         data: {
-          username: 'admin_role_permission_user',
           email: 'admin_role_permission@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: adminRolePermission.id,
@@ -50,7 +48,6 @@ async function main() {
       }),
       prisma.user.create({
         data: {
-          username: 'admin_agent_user',
           email: 'admin_agent@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: adminAgent.id,
@@ -59,7 +56,6 @@ async function main() {
       }),
       prisma.user.create({
         data: {
-          username: 'admin_merchant_user',
           email: 'admin_merchant@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: adminMerchant.id,
@@ -103,7 +99,6 @@ async function main() {
   const [agentUser1, agentUser2, agentUser3] = await prisma.$transaction([
     prisma.user.create({
       data: {
-        username: 'agent_user_1',
         email: 'agent1@example.com',
         password: await AuthHelper.hashPassword('password123'),
         roleId: agentRole.id,
@@ -112,7 +107,6 @@ async function main() {
     }),
     prisma.user.create({
       data: {
-        username: 'agent_user_2',
         email: 'agent2@example.com',
         password: await AuthHelper.hashPassword('password123'),
         roleId: agentRole.id,
@@ -121,7 +115,6 @@ async function main() {
     }),
     prisma.user.create({
       data: {
-        username: 'agent_user_3',
         email: 'agent3@example.com',
         password: await AuthHelper.hashPassword('password123'),
         roleId: agentRole.id,
@@ -176,7 +169,6 @@ async function main() {
     await prisma.$transaction([
       prisma.user.create({
         data: {
-          username: 'merchant_user_1',
           email: 'merchant1@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: merchantRole.id,
@@ -185,7 +177,6 @@ async function main() {
       }),
       prisma.user.create({
         data: {
-          username: 'merchant_user_2',
           email: 'merchant2@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: merchantRole.id,
@@ -194,7 +185,6 @@ async function main() {
       }),
       prisma.user.create({
         data: {
-          username: 'merchant_user_3',
           email: 'merchant3@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: merchantRole.id,
@@ -203,7 +193,6 @@ async function main() {
       }),
       prisma.user.create({
         data: {
-          username: 'merchant_user_4',
           email: 'merchant4@example.com',
           password: await AuthHelper.hashPassword('password123'),
           roleId: merchantRole.id,
@@ -216,9 +205,19 @@ async function main() {
     prisma.merchantDetail.create({
       data: {
         userId: merchantUser1.id,
-        businessName: 'Merchant One',
+        ownerName: 'Merchant Owner One',
+        businessName: 'Merchant Business Name One',
+        brandName: 'Brand One',
+        phoneNumber: '08954631470',
+        nik: '2132467912356985',
+        ktpImage: 'image',
         npwp: '01.234.567.8-901.111',
         address: 'Jl. Merchant 1',
+        province: 'Jakarta',
+        regency: 'Jakarta Barat',
+        district: 'Tanah Abang',
+        village: 'Bendungan Hilir',
+        postalCode: '10210',
         bankName: 'Mandiri',
         accountNumber: '111111111',
         accountHolderName: 'MERCHANT1',
@@ -228,9 +227,18 @@ async function main() {
     prisma.merchantDetail.create({
       data: {
         userId: merchantUser2.id,
-        businessName: 'Merchant Two',
+        ownerName: 'Merchant Owner Two',
+        businessName: 'Merchant Business Name Two',
+        brandName: 'Brand Two',
+        phoneNumber: '08745369771',
+        nik: '4120359785236541',
         npwp: '09.876.543.2-123.222',
         address: 'Jl. Merchant 2',
+        province: 'Jakarta',
+        regency: 'Jakarta Barat',
+        district: 'Tanah Abang',
+        village: 'Bendungan Hilir',
+        postalCode: '10210',
         bankName: 'BNI',
         accountNumber: '22222222',
         accountHolderName: 'MERCHANT2',
@@ -240,9 +248,18 @@ async function main() {
     prisma.merchantDetail.create({
       data: {
         userId: merchantUser3.id,
-        businessName: 'Merchant Three',
+        ownerName: 'Merchant Owner Three',
+        businessName: 'Merchant Business Name Three',
+        brandName: 'Brand Three',
+        phoneNumber: '0874123494379',
+        nik: '2450367891024686',
         npwp: '10.443.252.9-534.333',
         address: 'Jl. Merchant 3',
+        province: 'Jakarta',
+        regency: 'Jakarta Barat',
+        district: 'Tanah Abang',
+        village: 'Bendungan Hilir',
+        postalCode: '10210',
         bankName: 'BNI',
         accountNumber: '333333333',
         accountHolderName: 'MERCHANT3',
@@ -252,9 +269,18 @@ async function main() {
     prisma.merchantDetail.create({
       data: {
         userId: merchantUser4.id,
-        businessName: 'Merchant Four',
+        ownerName: 'Merchant Owner Four',
+        businessName: 'Merchant Business Name Four',
+        brandName: 'Brand Four',
+        phoneNumber: '082134759392',
+        nik: '7510365987204613',
         npwp: '78.225.445.9-363.444',
         address: 'Jl. Merchant 4',
+        province: 'Jakarta',
+        regency: 'Jakarta Barat',
+        district: 'Tanah Abang',
+        village: 'Bendungan Hilir',
+        postalCode: '10210',
         bankName: 'BNI',
         accountNumber: '444444444',
         accountHolderName: 'MERCHANT4',
