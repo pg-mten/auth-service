@@ -19,13 +19,14 @@ import { UserModule } from '../users/user.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
 import { PrismaUserInterceptor } from '../../interceptor/prisma-user.interceptor';
-import { PrismaService } from '../prisma/prisma.service';
 import { AgentDetailModule } from '../agent-detail/agent-detail.module';
 import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
+import { PrismaClient } from '@prisma/client';
 
 @Module({
   imports: [
@@ -48,7 +49,6 @@ import { MicroserviceModule } from 'src/microservice/microservice.module';
   controllers: [AppController],
   providers: [
     AppService,
-    PrismaService,
     /// PIPE
     {
       provide: APP_PIPE,
@@ -78,8 +78,8 @@ import { MicroserviceModule } from 'src/microservice/microservice.module';
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
     {
       provide: APP_INTERCEPTOR,
-      useFactory: (prisma: PrismaService) => new PrismaUserInterceptor(prisma),
-      inject: [PrismaService],
+      useFactory: (prisma: PrismaClient) => new PrismaUserInterceptor(prisma),
+      inject: [PRISMA_SERVICE],
     },
     /// GUARD
     {

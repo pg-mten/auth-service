@@ -1,11 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 @Injectable()
 export class RolesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private prisma: PrismaClient) {}
 
   create(dto: CreateRoleDto) {
     return this.prisma.role.create({ data: dto });

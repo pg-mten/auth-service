@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { UpdateAgentDetailDto } from './dto/update-agent-detail.dto';
 import { AgentDto } from './dto/agent.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
 import { AgentNameDto } from './dto/agent-name.dto';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 @Injectable()
 export class AgentDetailService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient) {}
 
   async findAll() {
     const agents = await this.prisma.agentDetail.findMany({

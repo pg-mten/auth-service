@@ -1,14 +1,15 @@
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
 import { CryptoHelper } from 'src/shared/helper/crypto.helper';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 import { DateHelper } from 'src/shared/helper/date.helper';
-import { UnauthorizedException } from '@nestjs/common';
+import { Inject, UnauthorizedException } from '@nestjs/common';
 import { ResponseException } from 'src/exception/response.exception';
 import { MerchantValidateSignatureSystemDto } from 'src/microservice/auth/dto-system/merchant-validate-signature.system.dto';
 import { FilterMerchantValidateSignatureSystemDto } from 'src/microservice/auth/dto-system/filter-merchant-validate-signature.system.dto';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 export class MerchantSignatureService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient) {}
 
   async generatePrivateKey(authInfo: AuthInfoDto) {
     const { userId } = authInfo;

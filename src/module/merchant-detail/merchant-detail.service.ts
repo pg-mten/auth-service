@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
 import { MerchantDto } from './dto/merchant.dto';
 import { DtoHelper } from 'src/shared/helper/dto.helper';
 import { MerchantNameDto } from './dto/merchant-names.dto';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 @Injectable()
 export class MerchantDetailService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient) {}
 
   async findAll() {
     const merchants = await this.prisma.merchantDetail.findMany({

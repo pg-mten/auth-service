@@ -1,5 +1,5 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { ROLE } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { ProfileMerchantDetailDto } from './dto/profile-merchant.dto';
@@ -7,10 +7,11 @@ import { ProfileAgentDetailDto } from './dto/profile-agent.dto';
 import { ProfieAdminDetailDto } from './dto/profile-admin.dto';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { ResponseException } from 'src/exception/response.exception';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 @Injectable()
 export class UserProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient) {}
 
   async findProfileIdByUserIdAndRole(userId: number, role: string) {
     // const role: ROLE = Object.values(ROLE).find(

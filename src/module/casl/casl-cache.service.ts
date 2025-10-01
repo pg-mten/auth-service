@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CaslAbilityFactory } from './casl-ability.factory';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 import { AppAbility } from './casl-ability.factory';
 import { Permission } from '@prisma/client';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 const abilityCache = new Map<number, AppAbility>();
 
 @Injectable()
 export class CaslCacheService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
     private readonly abilityFactory: CaslAbilityFactory,
   ) {}
 

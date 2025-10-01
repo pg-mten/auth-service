@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+dist
+build
+.git
+.env
+.dockerignore
+README.md
+.coverage
+.nyc_output

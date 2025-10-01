@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
 import { ROLE } from 'src/shared/constant/auth.constant';
@@ -13,11 +13,12 @@ import { AgentSystemDto } from 'src/microservice/auth/dto-system/agent.system.dt
 import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
 import { MerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/merchants-and-agents-by-ids.system.dto';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
+import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient,
     private readonly merchantService: MerchantDetailService,
     private readonly agentService: AgentDetailService,
     private readonly agentConfigClient: AgentConfigClient,
