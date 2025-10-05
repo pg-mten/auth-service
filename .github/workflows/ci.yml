@@ -35,32 +35,32 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           docker build \
-            --build-arg APP_NAME="${{ secrets.APP_NAME }}" \
-            --build-arg NODE_ENV="${{ secrets.NODE_ENV }}" \
-            --build-arg PORT="${{ secrets.PORT }}" \
-            --build-arg VERSION="${{ secrets.VERSION }}" \
-            --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --build-arg APP_NAME="${{ vars.APP_NAME }}" \
+            --build-arg NODE_ENV="${{ vars.NODE_ENV }}" \
+            --build-arg PORT="${{ vars.PORT }}" \
+            --build-arg VERSION="${{ vars.VERSION }}" \
+            --build-arg DATABASE_URL="${{ vars.DATABASE_URL }}" \
             --build-arg JWT_ACCESS_TOKEN_SECRET="${{ secrets.JWT_ACCESS_TOKEN_SECRET }}" \
             --build-arg JWT_ACCESS_TOKEN_EXPIRE="${{ secrets.JWT_ACCESS_TOKEN_EXPIRE }}" \
             --build-arg JWT_REFRESH_TOKEN_SECRET="${{ secrets.JWT_REFRESH_TOKEN_SECRET }}" \
             --build-arg JWT_REFRESH_TOKEN_EXPIRE="${{ secrets.JWT_REFRESH_TOKEN_EXPIRE }}" \
-            --build-arg TIMEZONE="${{ secrets.TIMEZONE }}" \
+            --build-arg TIMEZONE="${{ vars.TIMEZONE }}" \
             --build-arg ENCRYPTION_KEY="${{ secrets.ENCRYPTION_KEY }}" \
-            --build-arg URL_AUTH="${{ secrets.URL_AUTH }}" \
-            --build-arg URL_CONFIG="${{ secrets.URL_CONFIG }}" \
-            --build-arg URL_TRANSACTION="${{ secrets.URL_TRANSACTION }}" \
-            --build-arg URL_SETTLERECON="${{ secrets.URL_SETTLERECON }}" \
-            --build-arg CLIENT_AUTH_NAME="${{ secrets.CLIENT_AUTH_NAME }}" \
-            --build-arg CLIENT_AUTH_HOST="${{ secrets.CLIENT_AUTH_HOST }}" \
-            --build-arg CLIENT_AUTH_PORT="${{ secrets.CLIENT_AUTH_PORT }}" \
-            --build-arg CLIENT_CONFIG_NAME="${{ secrets.CLIENT_CONFIG_NAME }}" \
-            --build-arg CLIENT_CONFIG_HOST="${{ secrets.CLIENT_CONFIG_HOST }}" \
-            --build-arg CLIENT_CONFIG_PORT="${{ secrets.CLIENT_CONFIG_PORT }}" \
-            --build-arg CLIENT_TRANSACTION_NAME="${{ secrets.CLIENT_TRANSACTION_NAME }}" \
-            --build-arg CLIENT_TRANSACTION_HOST="${{ secrets.CLIENT_TRANSACTION_HOST }}" \
-            --build-arg CLIENT_TRANSACTION_PORT="${{ secrets.CLIENT_TRANSACTION_PORT }}" \
-            --build-arg CLIENT_SETTLERECON_NAME="${{ secrets.CLIENT_SETTLERECON_NAME }}" \
-            --build-arg CLIENT_SETTLERECON_HOST="${{ secrets.CLIENT_SETTLERECON_HOST }}" \
-            --build-arg CLIENT_SETTLERECON_PORT="${{ secrets.CLIENT_SETTLERECON_PORT }}" \
+            --build-arg URL_AUTH="${{ vars.URL_AUTH }}" \
+            --build-arg URL_CONFIG="${{ vars.URL_CONFIG }}" \
+            --build-arg URL_TRANSACTION="${{ vars.URL_TRANSACTION }}" \
+            --build-arg URL_SETTLERECON="${{ vars.URL_SETTLERECON }}" \
+            --build-arg CLIENT_AUTH_NAME="${{ vars.CLIENT_AUTH_NAME }}" \
+            --build-arg CLIENT_AUTH_HOST="${{ vars.CLIENT_AUTH_HOST }}" \
+            --build-arg CLIENT_AUTH_PORT="${{ vars.CLIENT_AUTH_PORT }}" \
+            --build-arg CLIENT_CONFIG_NAME="${{ vars.CLIENT_CONFIG_NAME }}" \
+            --build-arg CLIENT_CONFIG_HOST="${{ vars.CLIENT_CONFIG_HOST }}" \
+            --build-arg CLIENT_CONFIG_PORT="${{ vars.CLIENT_CONFIG_PORT }}" \
+            --build-arg CLIENT_TRANSACTION_NAME="${{ vars.CLIENT_TRANSACTION_NAME }}" \
+            --build-arg CLIENT_TRANSACTION_HOST="${{ vars.CLIENT_TRANSACTION_HOST }}" \
+            --build-arg CLIENT_TRANSACTION_PORT="${{ vars.CLIENT_TRANSACTION_PORT }}" \
+            --build-arg CLIENT_SETTLERECON_NAME="${{ vars.CLIENT_SETTLERECON_NAME }}" \
+            --build-arg CLIENT_SETTLERECON_HOST="${{ vars.CLIENT_SETTLERECON_HOST }}" \
+            --build-arg CLIENT_SETTLERECON_PORT="${{ vars.CLIENT_SETTLERECON_PORT }}" \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
