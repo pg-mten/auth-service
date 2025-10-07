@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/microservice/auth.constant';
 
 const prisma = new PrismaClient();
 

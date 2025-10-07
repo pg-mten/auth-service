@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/microservice/auth.constant';
 import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { MerchantDetailService } from '../merchant-detail/merchant-detail.service';
 import { AgentDetailService } from '../agent-detail/agent-detail.service';

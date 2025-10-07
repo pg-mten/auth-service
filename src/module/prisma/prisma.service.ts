@@ -12,6 +12,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async onModuleInit() {
     await this.$connect();
-    this.$extends(AuditTrailExtension(this.cls));
+    // this.$extends(AuditTrailExtension(this.cls));
+    Object.assign(this, this.$extends(AuditTrailExtension(this.cls)));
   }
 }

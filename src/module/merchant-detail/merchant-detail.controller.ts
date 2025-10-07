@@ -87,7 +87,6 @@ export class MerchantDetailController {
     return this.service.findAll();
   }
 
-  @Public()
   @Get('dropdown')
   @ApiOperation({ summary: 'List of Merchant Id and Name for dropdown' })
   @ApiOkResponse({ type: MerchantNameDto, isArray: true })
