@@ -35,12 +35,12 @@ import { HealthModule } from './health/health.module';
     MerchantSignatureAuthClient,
 
     /// TODO Non aktifkan dulu bolooo
-    // JwtStrategy,
+    JwtStrategy,
     /// Guard
-    // {
-    //   provide: APP_GUARD, // Highest priority
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD, // Highest priority
+      useClass: JwtAuthGuard,
+    },
     // {
     //   provide: APP_GUARD, // Lowest priority
     //   useClass: RolesGuard,

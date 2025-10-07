@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import { Prisma } from '@prisma/client';
-import { ClsServiceManager } from 'nestjs-cls';
+import { ClsService } from 'nestjs-cls';
+import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
 import { DateHelper } from 'src/shared/helper/date.helper';
 
 function hasData(args: any): args is { data: any } {
   return args && args.data;
 }
 
-export const auditTrailExtension = Prisma.defineExtension({
-  query: {
-    $allModels: {
-      async $allOperations({ model, operation, args, query }) {
-        // const getUserId = () => null; // Hardcoded for now
-        const cls = ClsServiceManager.getClsService();
-        const userId = cls.get('authInfo');
-        const now = DateHelper.now().toJSDate(); // Convert to Date object
+export const AuditTrailExtension = (cls: ClsService) => {
+  return Prisma.defineExtension({
+    name: 'audit-trail-extension',
+    query: {
+      $allOperations: ({ model, operation, args, query }) => {
+        const authInfo: AuthInfoDto | undefined = cls.get('authInfo');
+        const userId = authInfo?.userId;
+        const now = DateHelper.now().toJSDate();
 
         if (model) {
           if (operation === 'create' && hasData(args)) {
@@ -48,13 +49,13 @@ export const auditTrailExtension = Prisma.defineExtension({
             };
           } else if (operation === 'delete') {
             operation = 'update';
-            (args as any).data = {
+            args.data = {
               deletedAt: now,
               deletedBy: userId ?? undefined,
             };
           } else if (operation === 'deleteMany') {
             operation = 'updateMany';
-            (args as any).data = {
+            args.data = {
               deletedAt: now,
               deletedBy: userId ?? undefined,
             };
@@ -63,5 +64,5 @@ export const auditTrailExtension = Prisma.defineExtension({
         return query(args);
       },
     },
-  },
-});
+  });
+};

@@ -39,7 +39,7 @@ export class PoliciesGuard implements CanActivate {
     if (handlers.length === 0) return true;
 
     const req = context.switchToHttp().getRequest();
-    const authInfo = (req as Request).authInfo;
+    const authInfo = (req as Request).user;
     const ability = await this.caslCache.getAbility(authInfo.userId);
 
     return handlers.every((handler) =>

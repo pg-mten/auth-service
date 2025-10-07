@@ -18,15 +18,14 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../users/user.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
-import { PrismaUserInterceptor } from '../../interceptor/prisma-user.interceptor';
 import { AgentDetailModule } from '../agent-detail/agent-detail.module';
 import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
-import { PRISMA_SERVICE } from '../prisma/prisma.provider';
-import { PrismaClient } from '@prisma/client';
+import { ClsModule, ClsService } from 'nestjs-cls';
+import { AuthInfoInterceptor } from 'src/interceptor/auth-info.interceptor';
 
 @Module({
   imports: [
@@ -43,6 +42,10 @@ import { PrismaClient } from '@prisma/client';
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     CaslModule,
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true }, // attaches per-request storage
+    }),
 
     MicroserviceModule,
   ],
@@ -78,9 +81,11 @@ import { PrismaClient } from '@prisma/client';
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
     {
       provide: APP_INTERCEPTOR,
-      useFactory: (prisma: PrismaClient) => new PrismaUserInterceptor(prisma),
-      inject: [PRISMA_SERVICE],
+      useFactory: (clsService: ClsService) =>
+        new AuthInfoInterceptor(clsService),
+      inject: [ClsService],
     },
+
     /// GUARD
     {
       provide: APP_GUARD,

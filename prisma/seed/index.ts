@@ -35,6 +35,17 @@ async function main() {
     },
   });
 
+  const superAdminDetail = await prisma.adminDetail.create({
+    data: {
+      userId: superAdminUser.id,
+      fullname: 'Super Admin Role Permission',
+      address: 'Jl. Super Admin Role Permission',
+      phone: '0898764123',
+      createdBy: superAdminUser.id,
+    },
+  });
+  console.log({ superAdminUser, superAdminDetail });
+
   // === User Admin x3 ===
   const [adminRolePermissionUser, adminAgentUser, adminMerchantUser] =
     await prisma.$transaction([

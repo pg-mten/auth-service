@@ -38,7 +38,7 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   @ApiCreatedResponse({ type: AuthDto })
   async login(@Req() req: Request) {
-    console.log({ req });
-    return this.authService.login(req.authInfo);
+    const authInfo = req.user;
+    return this.authService.login(authInfo);
   }
 }
