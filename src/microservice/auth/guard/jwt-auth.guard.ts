@@ -34,6 +34,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     context: ExecutionContext,
     status?: any,
   ): TUser {
+    console.log('JwtAuthGuard');
     console.log({ err, user, info, context, status });
     /// TODO Sampai semua backend apps sudah implement JWT, di uncomment dulu
     if (err || !user) {

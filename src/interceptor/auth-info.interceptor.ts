@@ -9,6 +9,7 @@ export class AuthInfoInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
+    console.log('AuthInfoInterceptor');
     const request = context.switchToHttp().getRequest();
     const authInfo = (request as Request).user;
     this.cls.set('authInfo', authInfo);
