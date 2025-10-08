@@ -11,6 +11,8 @@ import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WinstonModule } from 'nest-winston';
 import { logger } from './shared/constant/logger.constant';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { SERVICES } from './microservice/client.constant';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -39,6 +41,15 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(API_PREFIX, app, document);
   }
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.TCP,
+    options: {
+      host: SERVICES.AUTH.host,
+      port: SERVICES.AUTH.port,
+    },
+  });
+  await app.startAllMicroservices();
+
   await app.listen(PORT, () => {
     console.log(`Auth service started listening: ${PORT}`);
   });
