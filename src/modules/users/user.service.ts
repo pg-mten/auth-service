@@ -79,7 +79,24 @@ export class UserService {
       const merchant = await tx.merchantDetail.create({
         data: {
           userId: user.id,
-          ...body,
+          ownerName: body.ownerName,
+          businessName: body.businessName,
+          brandName: body.brandName,
+          phoneNumber: body.phoneNumber,
+          nik: body.nik,
+          ktpImage: body.ktpImage,
+          npwp: body.npwp,
+          address: body.address,
+          province: body.province,
+          regency: body.regency,
+          district: body.district,
+          village: body.village,
+          postalCode: body.postalCode,
+          bankName: body.bankName,
+          accountNumber: body.accountNumber,
+          accountHolderName: body.accountHolderName,
+          siupFile: body.siupFile,
+          coordinate: body.coordinate,
         },
       });
 
