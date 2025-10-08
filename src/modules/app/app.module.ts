@@ -2,13 +2,7 @@ import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import {
-  APP_FILTER,
-  APP_GUARD,
-  APP_INTERCEPTOR,
-  APP_PIPE,
-  Reflector,
-} from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE, Reflector } from '@nestjs/core';
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
 import { PrismaClientKnownExceptionFilter } from 'src/filter/prisma-client-known.exception.filter';
 import { ResponseExceptionFilter } from 'src/filter/response.exception.filter';
@@ -18,33 +12,30 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../users/user.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { RolesModule } from '../roles/roles.module';
-import { PrismaUserInterceptor } from '../../interceptor/prisma-user.interceptor';
 import { AgentDetailModule } from '../agent-detail/agent-detail.module';
 import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { PoliciesGuard } from '../casl/policies.guard';
 import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
-import { PRISMA_SERVICE } from '../prisma/prisma.provider';
-import { PrismaClient } from '@prisma/client';
 
 @Module({
   imports: [
-    AuthModule,
-    UserModule,
-    PrismaModule,
-    PermissionsModule,
-    RolesModule,
-    AgentDetailModule,
-    MerchantDetailModule,
     /// System Configuration
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
-    CaslModule,
-
     MicroserviceModule,
+    CaslModule,
+    PrismaModule,
+
+    /// Businness
+    AuthModule,
+    UserModule,
+    PermissionsModule,
+    RolesModule,
+    AgentDetailModule,
+    MerchantDetailModule,
   ],
   controllers: [AppController],
   providers: [
@@ -54,8 +45,10 @@ import { PrismaClient } from '@prisma/client';
       provide: APP_PIPE,
       useClass: CustomValidationPipe,
     },
+
+    /// FILTER
     {
-      provide: APP_FILTER,
+      provide: APP_FILTER, // Lowest priority
       useClass: PrismaClientKnownExceptionFilter,
     },
     {
@@ -76,16 +69,6 @@ import { PrismaClient } from '@prisma/client';
       inject: [Reflector],
     },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
-    {
-      provide: APP_INTERCEPTOR,
-      useFactory: (prisma: PrismaClient) => new PrismaUserInterceptor(prisma),
-      inject: [PRISMA_SERVICE],
-    },
-    /// GUARD
-    {
-      provide: APP_GUARD,
-      useClass: PoliciesGuard,
-    },
   ],
 })
 export class AppModule {}

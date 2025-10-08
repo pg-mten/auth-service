@@ -1,6 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/microservice/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { ProfileMerchantDetailDto } from './dto/profile-merchant.dto';
 import { ProfileAgentDetailDto } from './dto/profile-agent.dto';

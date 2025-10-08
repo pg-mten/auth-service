@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../../microservice/auth/decorator/roles.decorator';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/microservice/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { Public } from '../../microservice/auth/decorator/public.decorator';
 import { UserProfileService } from './user-profile.service';

@@ -8,6 +8,7 @@ import {
   Headers,
   Query,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { MerchantDetailService } from './merchant-detail.service';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
@@ -69,8 +70,9 @@ export class MerchantDetailController {
 
   @MessagePattern({ cmd: SERVICES.AUTH.cmd.merchant_validate_signature })
   @UseInterceptors(ResponseInterceptor)
+  @UsePipes(CustomValidationPipe) // TODO Di coba dulu nanti
   validateSignatureTCP(
-    @Payload(CustomValidationPipe)
+    @Payload()
     payload: FilterMerchantValidateSignatureSystemDto,
   ) {
     return this.merchantSignatureService.validateSignature(payload);
@@ -85,7 +87,6 @@ export class MerchantDetailController {
     return this.service.findAll();
   }
 
-  @Public()
   @Get('dropdown')
   @ApiOperation({ summary: 'List of Merchant Id and Name for dropdown' })
   @ApiOkResponse({ type: MerchantNameDto, isArray: true })

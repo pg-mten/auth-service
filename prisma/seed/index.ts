@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/microservice/auth.constant';
 
 const prisma = new PrismaClient();
 
@@ -34,6 +34,17 @@ async function main() {
       roleId: superAdmin.id,
     },
   });
+
+  const superAdminDetail = await prisma.adminDetail.create({
+    data: {
+      userId: superAdminUser.id,
+      fullname: 'Super Admin Role Permission',
+      address: 'Jl. Super Admin Role Permission',
+      phone: '0898764123',
+      createdBy: superAdminUser.id,
+    },
+  });
+  console.log({ superAdminUser, superAdminDetail });
 
   // === User Admin x3 ===
   const [adminRolePermissionUser, adminAgentUser, adminMerchantUser] =

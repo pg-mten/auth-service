@@ -6,12 +6,14 @@ import { CHECK_POLICIES_KEY } from './policy.decorator';
 import { PolicyHandler } from './types/policy-handler.type';
 import { IS_PUBLIC_KEY } from '../../microservice/auth/decorator/public.decorator';
 import { Request } from 'express';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private caslCache: CaslCacheService,
+    private cls: ClsService,
   ) {}
 
   private execPolicyHandler(
@@ -29,6 +31,7 @@ export class PoliciesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+    console.log('PoliciesGuard');
     if (isPublic) return true;
     const handlers =
       this.reflector.get<PolicyHandler[]>(
@@ -39,7 +42,9 @@ export class PoliciesGuard implements CanActivate {
     if (handlers.length === 0) return true;
 
     const req = context.switchToHttp().getRequest();
-    const authInfo = (req as Request).authInfo;
+    const authInfo = (req as Request).user;
+    console.log({ authInfo });
+    console.log(this.cls.get('authInfo'));
     const ability = await this.caslCache.getAbility(authInfo.userId);
 
     return handlers.every((handler) =>
