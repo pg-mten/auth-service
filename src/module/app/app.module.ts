@@ -27,6 +27,7 @@ import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
 import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 import { PrismaClient } from '@prisma/client';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -43,8 +44,13 @@ import { PrismaClient } from '@prisma/client';
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     CaslModule,
-
     MicroserviceModule,
+    PrometheusModule.register({
+      path: '/metrics',
+      defaultMetrics: {
+        enabled: true,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [
