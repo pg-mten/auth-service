@@ -32,7 +32,10 @@ export class PoliciesGuard implements CanActivate {
       context.getClass(),
     ]);
     console.log('PoliciesGuard');
-    if (isPublic) return true;
+    const req = context.switchToHttp().getRequest();
+    const authInfo = (req as Request).user;
+
+    if (isPublic || authInfo.role === 'ADMIN_SUPER') return true;
     const handlers =
       this.reflector.get<PolicyHandler[]>(
         CHECK_POLICIES_KEY,
@@ -41,8 +44,6 @@ export class PoliciesGuard implements CanActivate {
 
     if (handlers.length === 0) return true;
 
-    const req = context.switchToHttp().getRequest();
-    const authInfo = (req as Request).user;
     console.log({ authInfo });
     console.log(this.cls.get('authInfo'));
     const ability = await this.caslCache.getAbility(authInfo.userId);
