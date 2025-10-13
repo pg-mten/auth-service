@@ -26,6 +26,10 @@ export class CreateAgentDto {
 
   @IsString()
   @ApiProperty()
+  bankCode: string;
+
+  @IsString()
+  @ApiProperty()
   bankName: string;
 
   @IsString()

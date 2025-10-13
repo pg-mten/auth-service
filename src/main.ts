@@ -13,6 +13,7 @@ import { WinstonModule } from 'nest-winston';
 import { logger } from './shared/constant/logger.constant';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { SERVICES } from './microservice/client.constant';
+import { MetricsMiddleware } from './middlewares/metrics.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,7 +21,11 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
-  app.setGlobalPrefix(API_PREFIX);
+  app.use(new MetricsMiddleware().use);
+
+  app.setGlobalPrefix(API_PREFIX, {
+    exclude: ['/metrics'],
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true }); // class-validator ngikut DI Nest
 
   // TODO jangan sampai production, origin set true demi development dan testing

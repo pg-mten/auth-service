@@ -67,6 +67,10 @@ export class CreateMerchantDto {
 
   @IsString()
   @ApiProperty()
+  bankCode: string;
+
+  @IsString()
+  @ApiProperty()
   bankName: string;
 
   @IsString()

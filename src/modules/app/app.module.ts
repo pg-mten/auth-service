@@ -17,6 +17,7 @@ import { MerchantDetailModule } from '../merchant-detail/merchant-detail.module'
 import { PrismaModule } from '../prisma/prisma.module';
 import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -25,7 +26,14 @@ import { MicroserviceModule } from 'src/microservice/microservice.module';
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
+    CaslModule,
     MicroserviceModule,
+    PrometheusModule.register({
+      path: '/metrics',
+      defaultMetrics: {
+        enabled: true,
+      },
+    }),
     CaslModule,
     PrismaModule,
 
