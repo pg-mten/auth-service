@@ -96,7 +96,8 @@ model AgentDetail {
   fullname          String
   address           String
   phone             String
-  bankName          String @db.VarChar(100) // contoh: "BCA", "BRI"
+  bankCode          String
+  bankName          String @db.VarChar(100)
   accountNumber     String @db.VarChar(50)
   accountHolderName String @db.VarChar(100)
 
@@ -127,6 +128,7 @@ model MerchantDetail {
   district          String // Kecamatan
   village           String // Kelurahan
   postalCode        String
+  bankCode          String
   bankName          String
   accountNumber     String
   accountHolderName String
