@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import { ROLE } from 'src/microservice/auth.constant';
 
 const prisma = new PrismaClient();
 
@@ -34,6 +34,17 @@ async function main() {
       roleId: superAdmin.id,
     },
   });
+
+  const superAdminDetail = await prisma.adminDetail.create({
+    data: {
+      userId: superAdminUser.id,
+      fullname: 'Super Admin Role Permission',
+      address: 'Jl. Super Admin Role Permission',
+      phone: '0898764123',
+      createdBy: superAdminUser.id,
+    },
+  });
+  console.log({ superAdminUser, superAdminDetail });
 
   // === User Admin x3 ===
   const [adminRolePermissionUser, adminAgentUser, adminMerchantUser] =
@@ -130,6 +141,7 @@ async function main() {
         fullname: 'Agent One',
         address: 'Jl. Agent 1',
         phone: '0811111111',
+        bankCode: '014',
         bankName: 'BCA',
         accountNumber: '1111111111',
         accountHolderName: 'AGENT1',
@@ -142,6 +154,7 @@ async function main() {
         fullname: 'Agent Two',
         address: 'Jl. Agent 2',
         phone: '0822222222',
+        bankCode: '002',
         bankName: 'BRI',
         accountNumber: '2222222222',
         accountHolderName: 'AGENT2',
@@ -154,6 +167,7 @@ async function main() {
         fullname: 'Agent Three',
         address: 'Jl. Agent 3',
         phone: '0833333333',
+        bankCode: '002',
         bankName: 'BRI',
         accountNumber: '3333333333',
         accountHolderName: 'AGENT3',
@@ -218,6 +232,7 @@ async function main() {
         district: 'Tanah Abang',
         village: 'Bendungan Hilir',
         postalCode: '10210',
+        bankCode: '008',
         bankName: 'Mandiri',
         accountNumber: '111111111',
         accountHolderName: 'MERCHANT1',
@@ -239,6 +254,7 @@ async function main() {
         district: 'Tanah Abang',
         village: 'Bendungan Hilir',
         postalCode: '10210',
+        bankCode: '009',
         bankName: 'BNI',
         accountNumber: '22222222',
         accountHolderName: 'MERCHANT2',
@@ -260,6 +276,7 @@ async function main() {
         district: 'Tanah Abang',
         village: 'Bendungan Hilir',
         postalCode: '10210',
+        bankCode: '009',
         bankName: 'BNI',
         accountNumber: '333333333',
         accountHolderName: 'MERCHANT3',
@@ -281,6 +298,7 @@ async function main() {
         district: 'Tanah Abang',
         village: 'Bendungan Hilir',
         postalCode: '10210',
+        bankCode: '009',
         bankName: 'BNI',
         accountNumber: '444444444',
         accountHolderName: 'MERCHANT4',
