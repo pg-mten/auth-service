@@ -33,7 +33,7 @@ async function bootstrap() {
     // credentials: true,
   });
 
-  if (IS_DEVELOPMENT) {
+  // if (IS_DEVELOPMENT) {
     const options = new DocumentBuilder()
       .setTitle(`${APP_NAME} Service`)
       .setDescription(`${APP_NAME} Service API Description`)
@@ -43,7 +43,7 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(API_PREFIX, app, document);
-  }
+  // }
   await app.listen(PORT, () => {
     console.log(`Auth service started listening: ${PORT}`);
   });
