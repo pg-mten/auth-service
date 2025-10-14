@@ -15,7 +15,7 @@ COPY . .
 
 # Generate Prisma client and build project
 RUN npx prisma generate
-RUN npm run prisma:seed
+# RUN npm run prisma:seed
 RUN npm run build
 
 # Production stage
