@@ -15,7 +15,7 @@ COPY . .
 
 # Generate Prisma client and build project
 RUN npx prisma generate
-RUN npm run prisma:seed
+# RUN npm run prisma:seed
 RUN npm run build
 
 # Production stage
@@ -105,4 +105,4 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node dist/health-check.js || exit 1
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
