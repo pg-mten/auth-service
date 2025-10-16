@@ -17,7 +17,7 @@ import {
 import { Roles } from '../../microservice/auth/decorator/roles.decorator';
 import { ROLE } from 'src/microservice/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
-import { Public } from '../../microservice/auth/decorator/public.decorator';
+import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
 import { UserProfileService } from './user-profile.service';
 import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
@@ -54,7 +54,7 @@ export class UserController {
   }
 
   @Get()
-  @Public()
+  @PublicApi()
   findAll() {
     return this.userService.findAll();
   }
@@ -63,7 +63,7 @@ export class UserController {
   @ApiOperation({ summary: 'Admin Register Merchant' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateMerchantDto })
-  @Public()
+  @PublicApi()
   async registerMerchant(@Body() body: CreateMerchantDto) {
     console.log({ body });
     await this.userService.registerMerchant(body);
@@ -79,7 +79,7 @@ export class UserController {
     return new ResponseDto({ status: ResponseStatus.CREATED });
   }
 
-  @Public()
+  @PublicApi()
   @ApiTags('Internal')
   @Get('internal/merchants-and-agents-by-ids')
   findAllMerchantsAndAgentsByIds(

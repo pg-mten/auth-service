@@ -17,8 +17,8 @@ import {
 } from '@nestjs/swagger';
 import { AgentDto } from './dto/agent.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
-import { Public } from '../../microservice/auth/decorator/public.decorator';
 import { AgentNameDto } from './dto/agent-name.dto';
+import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
 
 @ApiTags('Agent Detail')
 @ApiBearerAuth()
@@ -35,7 +35,7 @@ export class AgentDetailController {
     return this.service.findAll();
   }
 
-  @Public()
+  @PublicApi()
   @Get('dropdown')
   @ApiOperation({ summary: 'List of Agent Id and Name for dropdown' })
   @ApiOkResponse({ type: AgentNameDto, isArray: true })

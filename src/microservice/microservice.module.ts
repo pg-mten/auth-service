@@ -42,12 +42,12 @@ import { InacashProviderClient } from './provider/inacash/inacash.provider.clien
     InacashProviderClient,
 
     /// TODO Non aktifkan dulu bolooo
-    // JwtStrategy,
+    JwtStrategy,
     /// Guard
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     // {
     //   provide: APP_GUARD,
     //   useClass: RolesGuard,
