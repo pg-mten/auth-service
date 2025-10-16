@@ -24,7 +24,7 @@ import { AppAbility } from '../casl/casl-ability.factory';
 import { MerchantDto } from './dto/merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { MerchantNameDto } from './dto/merchant-names.dto';
-import { Public } from '../../microservice/auth/decorator/public.decorator';
+import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
 import { CurrentAuthInfo } from 'src/microservice/auth/decorator/current-auth-info.decorator';
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
 import { MerchantSignatureService } from './merchant-signature.service';
@@ -51,7 +51,7 @@ export class MerchantDetailController {
   }
 
   // @Get('/decrypt')
-  // @Public()
+  // @PublicApi()
   // decyrptPrivateKey(
   //   @Headers('x-merchant-id') merchantId: string,
   //   @Headers('x-signature') signature: string,
@@ -63,7 +63,7 @@ export class MerchantDetailController {
   // }
 
   @Get('/internal/validate-signature')
-  @Public() // @MerchantApi()
+  @PublicApi() // @MerchantApi()
   validateSignature(@Query() filter: FilterMerchantValidateSignatureSystemDto) {
     return this.merchantSignatureService.validateSignature(filter);
   }

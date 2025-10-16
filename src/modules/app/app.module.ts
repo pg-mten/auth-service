@@ -26,7 +26,6 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
-    CaslModule,
     MicroserviceModule,
     PrometheusModule.register({
       path: '/metrics',

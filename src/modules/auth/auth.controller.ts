@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Public } from '../../microservice/auth/decorator/public.decorator';
+import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Request } from 'express';
 import {
@@ -18,7 +18,7 @@ import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
+  @PublicApi()
   @Get('/hello')
   hello(): string {
     console.log('HELLO');
@@ -31,7 +31,7 @@ export class AuthController {
     return authInfo;
   }
 
-  @Public()
+  @PublicApi()
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiOperation({ summary: 'login for all Role' })
