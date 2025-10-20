@@ -10,6 +10,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 import { SERVICES } from '../client.constant';
 import { PRISMA_SERVICE } from 'src/modules/prisma/prisma.provider';
+import { PublicApi } from '../auth/decorator/public.decorator';
 
 @Controller('health')
 export class HealthController {
@@ -23,6 +24,7 @@ export class HealthController {
 
   @Get()
   @HealthCheck({ swaggerDocumentation: true })
+  @PublicApi()
   check() {
     return this.health.check([
       () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
