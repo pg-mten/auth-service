@@ -29,6 +29,11 @@ export class PoliciesGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const req: Request = context.switchToHttp().getRequest();
+
+    /// TODO: Temporary, Prometheus, Buatkan MetricsController dan pasang Decorator @SystemApi()
+    if (req.path === '/metrics') return true;
+
     const isPublicApi = this.reflector.getAllAndOverride<boolean>(
       PUBLIC_API_KEY,
       [context.getHandler(), context.getClass()],
@@ -43,8 +48,7 @@ export class PoliciesGuard implements CanActivate {
     );
     if (isPublicApi || isSystemApi || isMerchantApi) return true;
 
-    const req = context.switchToHttp().getRequest();
-    const authInfo = (req as Request).user;
+    const authInfo = req.user;
 
     if (!authInfo) return false;
 
