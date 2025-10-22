@@ -63,7 +63,7 @@ export class UserService {
     });
   }
 
-  async registerMerchant(body: CreateMerchantDto) {
+  async registerMerchant(authInfo: AuthInfoDto, body: CreateMerchantDto) {
     return await this.prisma.$transaction(async (tx) => {
       const role = await tx.role.findFirstOrThrow({
         where: { name: ROLE.MERCHANT },
@@ -106,6 +106,7 @@ export class UserService {
       try {
         const res = await this.merchantConfigClient.createTCP({
           id: merchant.id,
+          agentId: authInfo.profileId,
           settlementInterval: settlementInterval,
         });
         console.log(res.data);

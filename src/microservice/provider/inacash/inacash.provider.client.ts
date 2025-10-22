@@ -26,7 +26,7 @@ export class InacashProviderClient {
         `${URL_SETTLERECON}/provider/inacash/internal/qris`,
         body,
       );
-      return res;
+      return res.data;
     } catch (error) {
       console.log(error);
       throw error;
@@ -44,6 +44,7 @@ export class InacashProviderClient {
       return res;
     } catch (error) {
       console.log(error);
+      return this.purchaseQRIS(body);
       throw error;
     }
   }
@@ -54,7 +55,7 @@ export class InacashProviderClient {
         `${URL_SETTLERECON}/provider/inacash/internal/withdraw`,
         body,
       );
-      return res;
+      return res.data;
     } catch (error) {
       console.log(error);
       throw error;
@@ -72,6 +73,7 @@ export class InacashProviderClient {
       return res;
     } catch (error) {
       console.log(error);
+      return this.withdraw(body);
       throw error;
     }
   }
@@ -82,7 +84,7 @@ export class InacashProviderClient {
         `${URL_SETTLERECON}/provider/inacash/internal/disbursement`,
         body,
       );
-      return res;
+      return res.data;
     } catch (error) {
       console.log(error);
       throw error;
@@ -99,6 +101,7 @@ export class InacashProviderClient {
       return res;
     } catch (error) {
       console.log(error);
+      return this.disbursement(body);
       throw error;
     }
   }

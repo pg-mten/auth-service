@@ -63,10 +63,12 @@ export class UserController {
   @ApiOperation({ summary: 'Admin Register Merchant' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateMerchantDto })
-  @PublicApi()
-  async registerMerchant(@Body() body: CreateMerchantDto) {
-    console.log({ body });
-    await this.userService.registerMerchant(body);
+  async registerMerchant(
+    @CurrentAuthInfo() authInfo: AuthInfoDto,
+    @Body() body: CreateMerchantDto,
+  ) {
+    console.log({ authInfo, body });
+    await this.userService.registerMerchant(authInfo, body);
     return new ResponseDto({ status: ResponseStatus.CREATED });
   }
 
