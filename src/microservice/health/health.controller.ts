@@ -31,11 +31,35 @@ export class HealthController {
       async () =>
         this.prismaHealth.pingCheck('prisma', this.prisma, { timeout: 500 }),
       async () =>
-        this.microservice.pingCheck<TcpClientOptions>('tcp', {
+        this.microservice.pingCheck<TcpClientOptions>('tcp-auth', {
           transport: Transport.TCP,
           options: {
-            host: SERVICES.APP.host,
-            port: SERVICES.APP.port,
+            host: SERVICES.AUTH.host,
+            port: SERVICES.AUTH.port,
+          },
+        }),
+      async () =>
+        this.microservice.pingCheck<TcpClientOptions>('tcp-config', {
+          transport: Transport.TCP,
+          options: {
+            host: SERVICES.CONFIG.host,
+            port: SERVICES.CONFIG.port,
+          },
+        }),
+      async () =>
+        this.microservice.pingCheck<TcpClientOptions>('tcp-transaction', {
+          transport: Transport.TCP,
+          options: {
+            host: SERVICES.TRANSACTION.host,
+            port: SERVICES.TRANSACTION.port,
+          },
+        }),
+      async () =>
+        this.microservice.pingCheck<TcpClientOptions>('tcp-settlerecon', {
+          transport: Transport.TCP,
+          options: {
+            host: SERVICES.SETTLERECON.host,
+            port: SERVICES.SETTLERECON.port,
           },
         }),
     ]);
