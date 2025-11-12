@@ -14,6 +14,10 @@ export class CreateAgentDto {
 
   @IsString()
   @ApiProperty()
+  username: string;
+
+  @IsString()
+  @ApiProperty()
   fullname: string;
 
   @IsString()
