@@ -138,6 +138,7 @@ async function main() {
     prisma.agentDetail.create({
       data: {
         userId: agentUser1.id,
+        username: 'agentone',
         fullname: 'Agent One',
         address: 'Jl. Agent 1',
         phone: '0811111111',
@@ -151,6 +152,7 @@ async function main() {
     prisma.agentDetail.create({
       data: {
         userId: agentUser2.id,
+        username: 'agenttwo',
         fullname: 'Agent Two',
         address: 'Jl. Agent 2',
         phone: '0822222222',
@@ -164,6 +166,7 @@ async function main() {
     prisma.agentDetail.create({
       data: {
         userId: agentUser3.id,
+        username: 'agentthree',
         fullname: 'Agent Three',
         address: 'Jl. Agent 3',
         phone: '0833333333',

@@ -131,6 +131,7 @@ export class UserService {
         },
       });
       const {
+        username,
         fullname,
         address,
         phone,
@@ -142,6 +143,7 @@ export class UserService {
       const agent = await tx.agentDetail.create({
         data: {
           userId: user.id,
+          username,
           fullname,
           address,
           phone,

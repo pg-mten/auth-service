@@ -93,6 +93,7 @@ model AdminDetail {
 
 model AgentDetail {
   id                Int    @id @default(autoincrement())
+  username          String
   fullname          String
   address           String
   phone             String
