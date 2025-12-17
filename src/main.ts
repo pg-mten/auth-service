@@ -23,7 +23,7 @@ async function bootstrap() {
 
   app.use(new MetricsMiddleware().use);
 
-  app.setGlobalPrefix('/api/v1', {
+  app.setGlobalPrefix(API_PREFIX, {
     exclude: ['/metrics'],
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true }); // class-validator ngikut DI Nest
@@ -46,7 +46,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/api/v1', app, document);
+  SwaggerModule.setup(API_PREFIX, app, document);
   // }
 
   app.connectMicroservice<MicroserviceOptions>({
