@@ -13,12 +13,13 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { MerchantSignatureAuthClient } from './auth/merchant-signature.auth.client';
 import { HealthModule } from './health/health.module';
-import { ClsModule, ClsService } from 'nestjs-cls';
+// import { ClsModule, ClsService } from 'nestjs-cls';
 import { AuthInfoInterceptor } from 'src/interceptor/auth-info.interceptor';
 import { PurchaseTransactionClient } from './transaction/purchase/purchase.transaction.client';
 import { InacashProviderClient } from './provider/inacash/inacash.provider.client';
 import { WithdrawTransacionClient } from './transaction/withdraw/withdraw.transaction.client';
 import { DisbursementTransactionClient } from './transaction/disbursement/disbursement.transaction.client';
+import { PdnProviderClient } from './provider/pdn/pdn.provider.client';
 
 @Global()
 @Module({
@@ -33,6 +34,7 @@ import { DisbursementTransactionClient } from './transaction/disbursement/disbur
     WithdrawTransacionClient,
     DisbursementTransactionClient,
     InacashProviderClient,
+    PdnProviderClient,
   ],
   providers: [
     /// Register Client
@@ -46,14 +48,15 @@ import { DisbursementTransactionClient } from './transaction/disbursement/disbur
     WithdrawTransacionClient,
     DisbursementTransactionClient,
     InacashProviderClient,
+    PdnProviderClient,
 
     /// TODO Non aktifkan dulu bolooo
-    JwtStrategy,
+    // JwtStrategy,
     /// Guard
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
     // {
     //   provide: APP_GUARD,
     //   useClass: RolesGuard,
@@ -75,12 +78,12 @@ import { DisbursementTransactionClient } from './transaction/disbursement/disbur
       signOptions: { expiresIn: JWT.accessToken.expireIn },
     }),
 
-    ClsModule.forRoot({
-      global: true,
-      middleware: {
-        mount: true,
-      },
-    }),
+    // ClsModule.forRoot({
+    //   global: true,
+    //   middleware: {
+    //     mount: true,
+    //   },
+    // }),
 
     /// Register Client
     ClientsModule.register([

@@ -23,7 +23,7 @@ async function bootstrap() {
 
   app.use(new MetricsMiddleware().use);
 
-  app.setGlobalPrefix(API_PREFIX, {
+  app.setGlobalPrefix('/api/v1', {
     exclude: ['/metrics'],
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true }); // class-validator ngikut DI Nest
@@ -36,15 +36,17 @@ async function bootstrap() {
   });
 
   // if (IS_DEVELOPMENT) {
-    const options = new DocumentBuilder()
-      .setTitle(`${APP_NAME} Service`)
-      .setDescription(`${APP_NAME} Service API Description`)
-      .setVersion(VERSION)
-      .addBearerAuth()
-      .build();
+  const options = new DocumentBuilder()
+    .setTitle(`${APP_NAME} Service`)
+    .setDescription(`${APP_NAME} Service API Description`)
+    .setVersion(VERSION)
+    .addServer('http://localhost:3000', 'Local')
+    .addServer(`https://api.manapay.id/auth`, 'Production') // Adjust with Server Proxy
+    .addBearerAuth()
+    .build();
 
-    const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup(API_PREFIX, app, document);
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('/api/v1', app, document);
   // }
 
   app.connectMicroservice<MicroserviceOptions>({
