@@ -13,7 +13,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
 import { MerchantSignatureAuthClient } from './auth/merchant-signature.auth.client';
 import { HealthModule } from './health/health.module';
-// import { ClsModule, ClsService } from 'nestjs-cls';
+import { ClsModule, ClsService } from 'nestjs-cls';
 import { AuthInfoInterceptor } from 'src/interceptor/auth-info.interceptor';
 import { PurchaseTransactionClient } from './transaction/purchase/purchase.transaction.client';
 import { InacashProviderClient } from './provider/inacash/inacash.provider.client';
@@ -78,12 +78,12 @@ import { PdnProviderClient } from './provider/pdn/pdn.provider.client';
       signOptions: { expiresIn: JWT.accessToken.expireIn },
     }),
 
-    // ClsModule.forRoot({
-    //   global: true,
-    //   middleware: {
-    //     mount: true,
-    //   },
-    // }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+      },
+    }),
 
     /// Register Client
     ClientsModule.register([
