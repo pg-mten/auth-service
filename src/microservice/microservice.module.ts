@@ -20,6 +20,7 @@ import { InacashProviderClient } from './provider/inacash/inacash.provider.clien
 import { WithdrawTransacionClient } from './transaction/withdraw/withdraw.transaction.client';
 import { DisbursementTransactionClient } from './transaction/disbursement/disbursement.transaction.client';
 import { PdnProviderClient } from './provider/pdn/pdn.provider.client';
+import { RolesGuard } from './auth/guard/roles.guard';
 
 @Global()
 @Module({
@@ -51,22 +52,22 @@ import { PdnProviderClient } from './provider/pdn/pdn.provider.client';
     PdnProviderClient,
 
     /// TODO Non aktifkan dulu bolooo
-    // JwtStrategy,
+    JwtStrategy,
     /// Guard
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useFactory: (clsService: ClsService) =>
-    //     new AuthInfoInterceptor(clsService),
-    //   inject: [ClsService],
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (clsService: ClsService) =>
+        new AuthInfoInterceptor(clsService),
+      inject: [ClsService],
+    },
   ],
 
   imports: [

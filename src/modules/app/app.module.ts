@@ -26,13 +26,13 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
-    MicroserviceModule,
     PrometheusModule.register({
       path: '/metrics',
       defaultMetrics: {
         enabled: true,
       },
     }),
+    MicroserviceModule,
     CaslModule,
     PrismaModule,
 

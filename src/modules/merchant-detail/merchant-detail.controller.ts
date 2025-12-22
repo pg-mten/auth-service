@@ -80,7 +80,7 @@ export class MerchantDetailController {
 
   // TODO Pagination
   @Get()
-  @CheckPolicies((ability: AppAbility) => ability.can('read', 'MerchantDetail'))
+  // @CheckPolicies((ability: AppAbility) => ability.can('read', 'MerchantDetail'))
   @ApiOperation({ summary: 'List of Merchant' })
   @ApiOkResponse({ type: MerchantDto, isArray: true })
   findAll() {
