@@ -21,6 +21,7 @@ import { WithdrawTransacionClient } from './transaction/withdraw/withdraw.transa
 import { DisbursementTransactionClient } from './transaction/disbursement/disbursement.transaction.client';
 import { PdnProviderClient } from './provider/pdn/pdn.provider.client';
 import { RolesGuard } from './auth/guard/roles.guard';
+import { ProfileProviderConfigClient } from './config/profile-provider.config.client';
 
 @Global()
 @Module({
@@ -36,6 +37,7 @@ import { RolesGuard } from './auth/guard/roles.guard';
     DisbursementTransactionClient,
     InacashProviderClient,
     PdnProviderClient,
+    ProfileProviderConfigClient,
   ],
   providers: [
     /// Register Client
@@ -50,6 +52,7 @@ import { RolesGuard } from './auth/guard/roles.guard';
     DisbursementTransactionClient,
     InacashProviderClient,
     PdnProviderClient,
+    ProfileProviderConfigClient,
 
     /// TODO Non aktifkan dulu bolooo
     JwtStrategy,

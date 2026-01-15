@@ -8,6 +8,9 @@ import { ProfieAdminDetailDto } from './dto/profile-admin.dto';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { ResponseException } from 'src/exception/response.exception';
 import { PRISMA_SERVICE } from '../prisma/prisma.provider';
+import { FilterProfileBankSystemDto } from 'src/microservice/auth/dto-system/filter-profile-bank.system.dto';
+import { ProfileBankByIdSystemDto } from 'src/microservice/auth/dto-system/profile-bank.system.dto';
+import { TransactionUserRole } from 'src/microservice/transaction.constant';
 
 @Injectable()
 export class UserProfileService {
@@ -78,5 +81,57 @@ export class UserProfileService {
       profileDto.admin = profileDetailDto;
     }
     return profileDto;
+  }
+
+  async findProfileBank(dto: FilterProfileBankSystemDto) {
+    const { userId } = dto;
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: { role: true },
+    });
+    const role = user.role.name;
+
+    if (role.toLowerCase().includes('agent')) {
+      const agent = await this.prisma.agentDetail.findUniqueOrThrow({
+        where: { userId: userId },
+      });
+      return new ProfileBankByIdSystemDto({
+        userId: userId,
+        profileId: agent.id,
+        userRole: TransactionUserRole.AGENT,
+        bankCode: agent.bankCode,
+        bankName: agent.bankName,
+        accountNumber: agent.accountNumber,
+        accountHolderName: agent.accountHolderName,
+      });
+    } else if (role.toLowerCase().includes('merchant')) {
+      const merchant = await this.prisma.merchantDetail.findUniqueOrThrow({
+        where: { userId: userId },
+      });
+      return new ProfileBankByIdSystemDto({
+        userId: userId,
+        profileId: merchant.id,
+        userRole: TransactionUserRole.MERCHANT,
+        bankCode: merchant.bankCode,
+        bankName: merchant.bankName,
+        accountNumber: merchant.accountNumber,
+        accountHolderName: merchant.accountHolderName,
+      });
+    }
+
+    const admin = await this.prisma.adminDetail.findUniqueOrThrow({
+      where: { userId: userId },
+    });
+
+    // TODO Tanya ke manager, apa nomor rekeningnya
+    return new ProfileBankByIdSystemDto({
+      userId: userId,
+      profileId: admin.id,
+      userRole: TransactionUserRole.ADMIN,
+      bankCode: '',
+      bankName: '',
+      accountNumber: '',
+      accountHolderName: '',
+    });
   }
 }

@@ -29,6 +29,8 @@ import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
+import { SystemApi } from 'src/microservice/auth/decorator/system.decorator';
+import { FilterProfileBankSystemDto } from 'src/microservice/auth/dto-system/filter-profile-bank.system.dto';
 
 @Controller('user')
 export class UserController {
@@ -81,7 +83,7 @@ export class UserController {
     return new ResponseDto({ status: ResponseStatus.CREATED });
   }
 
-  @PublicApi()
+  @SystemApi()
   @ApiTags('Internal')
   @Get('internal/merchants-and-agents-by-ids')
   findAllMerchantsAndAgentsByIds(
@@ -101,5 +103,22 @@ export class UserController {
   ) {
     console.log({ payload });
     return this.userService.findAllMerchantsAndAgentsByIds(payload);
+  }
+
+  @SystemApi()
+  @ApiTags('Internal')
+  @Get('internal/profile-bank')
+  async findProfileBank(@Query() filter: FilterProfileBankSystemDto) {
+    console.log({ filter });
+    return this.userProfileService.findProfileBank(filter);
+  }
+
+  @MessagePattern({ cmd: SERVICES.AUTH.cmd.find_profile_bank })
+  @UseInterceptors(ResponseInterceptor)
+  async findProfileBankTCP(
+    @Payload(CustomValidationPipe) payload: FilterProfileBankSystemDto,
+  ) {
+    console.log({ payload });
+    return this.userProfileService.findProfileBank(payload);
   }
 }
