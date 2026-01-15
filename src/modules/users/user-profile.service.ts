@@ -50,37 +50,49 @@ export class UserProfileService {
       (value) => value === (roleAuthInfo as ROLE),
     )!;
 
-    const profile = await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
     });
-    const profileDto = new ProfileDto({ ...profile });
+    // const profileDto = new ProfileDto({ ...profile });
 
     if (role === ROLE.AGENT) {
       const profileDetail = await this.prisma.agentDetail.findUniqueOrThrow({
         where: { userId },
       });
-      const profileDetailDto = new ProfileAgentDetailDto({ ...profileDetail });
-      profileDto.agent = profileDetailDto;
+      return new ProfileDto({
+        userId: user.id,
+        profileId: profileDetail.id,
+        email: user.email,
+        agent: new ProfileAgentDetailDto({ ...profileDetail }),
+      });
     } else if (role === ROLE.MERCHANT) {
       const profileDetail = await this.prisma.merchantDetail.findUniqueOrThrow({
         where: { userId },
       });
-      const profileDetailDto = new ProfileMerchantDetailDto({
-        ...profileDetail,
+      return new ProfileDto({
+        userId: user.id,
+        profileId: profileDetail.id,
+        email: user.email,
+        merchant: new ProfileMerchantDetailDto({
+          ...profileDetail,
+        }),
       });
-      profileDto.merchant = profileDetailDto;
-    } else if (
-      role === ROLE.ADMIN_AGENT ||
-      role === ROLE.ADMIN_MERCHANT ||
-      role === ROLE.ADMIN_ROLE_PERMISSION
-    ) {
-      const profileDetail = await this.prisma.adminDetail.findUniqueOrThrow({
-        where: { userId },
-      });
-      const profileDetailDto = new ProfieAdminDetailDto({ ...profileDetail });
-      profileDto.admin = profileDetailDto;
     }
-    return profileDto;
+    // else if (
+    //   role === ROLE.ADMIN_AGENT ||
+    //   role === ROLE.ADMIN_MERCHANT ||
+    //   role === ROLE.ADMIN_ROLE_PERMISSION
+    // ) {
+    // }
+    const profileDetail = await this.prisma.adminDetail.findUniqueOrThrow({
+      where: { userId },
+    });
+    return new ProfileDto({
+      userId: user.id,
+      profileId: profileDetail.id,
+      email: user.email,
+      admin: new ProfieAdminDetailDto({ ...profileDetail }),
+    });
   }
 
   async findProfileBank(dto: FilterProfileBankSystemDto) {

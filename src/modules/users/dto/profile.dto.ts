@@ -9,6 +9,12 @@ export class ProfileDto {
     DtoHelper.assign(this, data);
   }
 
+  @ApiProperty({ type: Number })
+  userId: number;
+
+  @ApiProperty({ type: Number })
+  profileId: number;
+
   @ApiProperty({ type: String })
   email: string;
 
