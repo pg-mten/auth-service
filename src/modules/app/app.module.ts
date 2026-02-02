@@ -3,11 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE, Reflector } from '@nestjs/core';
-import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
-import { PrismaClientKnownExceptionFilter } from 'src/filter/prisma-client-known.exception.filter';
-import { ResponseExceptionFilter } from 'src/filter/response.exception.filter';
-import { InvalidRequestExceptionFilter } from 'src/filter/invalid-request.exception.filter';
-import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
+import { CustomValidationPipe } from 'src/shared/pipe/custom-validation.pipe';
+import {
+  PrismaClientKnownExceptionFilter,
+  ResponseExceptionFilter,
+  InvalidRequestExceptionFilter,
+} from 'src/shared/filter';
+import { ResponseInterceptor } from 'src/shared/interceptor/response.interceptor';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../users/user.module';
 import { PermissionsModule } from '../permissions/permissions.module';

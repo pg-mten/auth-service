@@ -10,9 +10,9 @@ import {
 import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WinstonModule } from 'nest-winston';
-import { logger } from './shared/constant/logger.constant';
+import { logger } from 'src/shared/constant/logger.constant';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { SERVICES } from './microservice/client.constant';
+import { SERVICES } from 'src/shared/constant/client.constant';
 import { MetricsMiddleware } from './middlewares/metrics.middleware';
 
 async function bootstrap() {

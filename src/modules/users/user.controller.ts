@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../../microservice/auth/decorator/roles.decorator';
-import { ROLE } from 'src/microservice/auth.constant';
+import { ROLE } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
 import { UserProfileService } from './user-profile.service';
@@ -24,9 +24,9 @@ import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { SERVICES } from 'src/microservice/client.constant';
-import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
-import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
+import { SERVICES } from 'src/shared/constant/client.constant';
+import { ResponseInterceptor } from 'src/shared/interceptor/response.interceptor';
+import { CustomValidationPipe } from 'src/shared/pipe/custom-validation.pipe';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
 import { SystemApi } from 'src/microservice/auth/decorator/system.decorator';

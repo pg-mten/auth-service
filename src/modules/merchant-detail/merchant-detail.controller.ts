@@ -30,9 +30,9 @@ import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
 import { MerchantSignatureService } from './merchant-signature.service';
 import { FilterMerchantValidateSignatureSystemDto } from 'src/microservice/auth/dto-system/filter-merchant-validate-signature.system.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { SERVICES } from 'src/microservice/client.constant';
-import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
-import { CustomValidationPipe } from 'src/pipe/custom-validation.pipe';
+import { SERVICES } from 'src/shared/constant/client.constant';
+import { ResponseInterceptor } from 'src/shared/interceptor/response.interceptor';
+import { CustomValidationPipe } from 'src/shared/pipe/custom-validation.pipe';
 
 @ApiTags('Merchant Detail')
 @ApiBearerAuth()

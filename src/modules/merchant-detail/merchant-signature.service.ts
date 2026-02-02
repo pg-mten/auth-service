@@ -3,7 +3,7 @@ import { CryptoHelper } from 'src/shared/helper/crypto.helper';
 import { PrismaClient } from '@prisma/client';
 import { DateHelper } from 'src/shared/helper/date.helper';
 import { Inject, UnauthorizedException } from '@nestjs/common';
-import { ResponseException } from 'src/exception/response.exception';
+import { ResponseException } from 'src/shared/exception/response.exception';
 import { MerchantValidateSignatureSystemDto } from 'src/microservice/auth/dto-system/merchant-validate-signature.system.dto';
 import { FilterMerchantValidateSignatureSystemDto } from 'src/microservice/auth/dto-system/filter-merchant-validate-signature.system.dto';
 import { PRISMA_SERVICE } from '../prisma/prisma.provider';

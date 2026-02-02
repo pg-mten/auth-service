@@ -1,16 +1,16 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { ROLE } from 'src/microservice/auth.constant';
+import { ROLE } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
 import { ProfileMerchantDetailDto } from './dto/profile-merchant.dto';
 import { ProfileAgentDetailDto } from './dto/profile-agent.dto';
 import { ProfieAdminDetailDto } from './dto/profile-admin.dto';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
-import { ResponseException } from 'src/exception/response.exception';
+import { ResponseException } from 'src/shared/exception/response.exception';
 import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 import { FilterProfileBankSystemDto } from 'src/microservice/auth/dto-system/filter-profile-bank.system.dto';
 import { ProfileBankByIdSystemDto } from 'src/microservice/auth/dto-system/profile-bank.system.dto';
-import { TransactionUserRole } from 'src/microservice/transaction.constant';
+import { TransactionUserRole } from 'src/shared/constant/transaction.constant';
 
 @Injectable()
 export class UserProfileService {
