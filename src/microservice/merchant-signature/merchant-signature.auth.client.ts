@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { SERVICES, URL_AUTH } from 'src/shared/constant/client.constant';
-import { FilterMerchantValidateSignatureSystemDto } from './dto-system/filter-merchant-validate-signature.system.dto';
+import { FilterMerchantSignatureValidationSystemDto } from './filter-merchant-signature-validation.system.dto';
 import axios from 'axios';
 import { ResponseDto } from 'src/shared/response.dto';
-import { MerchantValidateSignatureSystemDto } from './dto-system/merchant-validate-signature.system.dto';
+import { MerchantSignatureValidationSystemDto } from './merchant-signature-validation.system.dto';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
@@ -16,13 +16,13 @@ export class MerchantSignatureAuthClient {
 
   private readonly cmd = SERVICES.AUTH.cmd;
 
-  async validateSignature(filter: FilterMerchantValidateSignatureSystemDto) {
+  async signatureValidation(
+    filter: FilterMerchantSignatureValidationSystemDto,
+  ) {
     try {
       const res = await axios.get<
-        ResponseDto<MerchantValidateSignatureSystemDto>
-      >(`${URL_AUTH}/merchant-detail/internal/validate-signature`, {
-        params: filter,
-      });
+        ResponseDto<MerchantSignatureValidationSystemDto>
+      >(`${URL_AUTH}/merchant-signature/validation`, { params: filter });
       return res.data;
     } catch (error) {
       console.log(error);
@@ -30,18 +30,20 @@ export class MerchantSignatureAuthClient {
     }
   }
 
-  async validateSignatureTCP(filter: FilterMerchantValidateSignatureSystemDto) {
+  async signatureValidationTCP(
+    filter: FilterMerchantSignatureValidationSystemDto,
+  ) {
     try {
       const res = await firstValueFrom(
-        this.authClient.send<ResponseDto<MerchantValidateSignatureSystemDto>>(
-          { cmd: this.cmd.merchant_validate_signature },
+        this.authClient.send<ResponseDto<MerchantSignatureValidationSystemDto>>(
+          { cmd: this.cmd.merchant_signature_validation },
           filter,
         ),
       );
       return res;
     } catch (error) {
       console.log(error);
-      return this.validateSignature(filter);
+      return this.signatureValidation(filter);
       throw error;
     }
   }

@@ -2,7 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { AuthHelper } from 'src/shared/helper/auth.helper';
-import { ROLE } from 'src/shared/constant/auth.constant';
+import {
+  MerchantSignatureStatusEnum,
+  ROLE,
+} from 'src/shared/constant/auth.constant';
 import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { MerchantDetailService } from '../merchant-detail/merchant-detail.service';
 import { AgentDetailService } from '../agent-detail/agent-detail.service';
@@ -14,6 +17,7 @@ import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dt
 import { MerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/merchants-and-agents-by-ids.system.dto';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { PRISMA_SERVICE } from '../prisma/prisma.provider';
+import { CryptoHelper } from 'src/shared/helper';
 
 @Injectable()
 export class UserService {
@@ -100,8 +104,16 @@ export class UserService {
           coordinate: body.coordinate,
         },
       });
+      const cliendId = CryptoHelper.generateClientId(user.id);
+      const merchantSignature = await tx.merchantSignature.create({
+        data: {
+          clientId: cliendId,
+          status: MerchantSignatureStatusEnum.ACTIVE,
+          userId: user.id,
+        },
+      });
 
-      console.log({ user, merchant });
+      console.log({ user, merchant, merchantSignature });
       const { settlementInterval } = body;
       try {
         const res = await this.merchantConfigClient.createTCP({

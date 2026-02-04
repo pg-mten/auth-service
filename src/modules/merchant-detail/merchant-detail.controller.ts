@@ -5,10 +5,6 @@ import {
   Patch,
   Param,
   ParseIntPipe,
-  Headers,
-  Query,
-  UseInterceptors,
-  UsePipes,
 } from '@nestjs/common';
 import { MerchantDetailService } from './merchant-detail.service';
 import { UpdateMerchantDetailDto } from './dto/update-merchant-detail.dto';
@@ -24,59 +20,12 @@ import { AppAbility } from '../casl/casl-ability.factory';
 import { MerchantDto } from './dto/merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { MerchantNameDto } from './dto/merchant-names.dto';
-import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
-import { CurrentAuthInfo } from 'src/microservice/auth/decorator/current-auth-info.decorator';
-import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
-import { MerchantSignatureService } from './merchant-signature.service';
-import { FilterMerchantValidateSignatureSystemDto } from 'src/microservice/auth/dto-system/filter-merchant-validate-signature.system.dto';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { SERVICES } from 'src/shared/constant/client.constant';
-import { ResponseInterceptor } from 'src/shared/interceptor/response.interceptor';
-import { CustomValidationPipe } from 'src/shared/pipe/custom-validation.pipe';
 
 @ApiTags('Merchant Detail')
 @ApiBearerAuth()
 @Controller('merchant-detail')
 export class MerchantDetailController {
-  constructor(
-    private readonly service: MerchantDetailService,
-    private readonly merchantSignatureService: MerchantSignatureService,
-  ) {}
-
-  @Get('/generate-private-key')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Generate Private Key' })
-  generatePrivateKey(@CurrentAuthInfo() authInfo: AuthInfoDto) {
-    return this.merchantSignatureService.generatePrivateKey(authInfo);
-  }
-
-  // @Get('/decrypt')
-  // @PublicApi()
-  // decyrptPrivateKey(
-  //   @Headers('x-merchant-id') merchantId: string,
-  //   @Headers('x-signature') signature: string,
-  // ) {
-  //   return this.merchantSignatureService.validateSignatureRequest(
-  //     +merchantId,
-  //     signature,
-  //   );
-  // }
-
-  @Get('/internal/validate-signature')
-  @PublicApi() // @MerchantApi()
-  validateSignature(@Query() filter: FilterMerchantValidateSignatureSystemDto) {
-    return this.merchantSignatureService.validateSignature(filter);
-  }
-
-  @MessagePattern({ cmd: SERVICES.AUTH.cmd.merchant_validate_signature })
-  @UseInterceptors(ResponseInterceptor)
-  @UsePipes(CustomValidationPipe) // TODO Di coba dulu nanti
-  validateSignatureTCP(
-    @Payload()
-    payload: FilterMerchantValidateSignatureSystemDto,
-  ) {
-    return this.merchantSignatureService.validateSignature(payload);
-  }
+  constructor(private readonly service: MerchantDetailService) {}
 
   // TODO Pagination
   @Get()

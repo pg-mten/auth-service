@@ -66,9 +66,10 @@ model User {
   updatedBy Int?      @db.Integer()
   deletedAt DateTime? @db.Timestamp()
 
-  AgentDetail    AgentDetail?
-  MerchantDetail MerchantDetail?
-  AdminDetail    AdminDetail?
+  AgentDetail       AgentDetail?
+  MerchantDetail    MerchantDetail?
+  AdminDetail       AdminDetail?
+  merchantSignature MerchantSignature?
 
   @@schema("auth")
 }
@@ -139,8 +140,27 @@ model MerchantDetail {
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
 
-  privateKey          String?
-  timestampPrivateKey DateTime?
+  createdAt DateTime  @default(now())
+  createdBy Int?      @db.Integer()
+  updatedAt DateTime? @updatedAt()
+  updatedBy Int?      @db.Integer()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@schema("auth")
+}
+
+model MerchantSignature {
+  id                Int     @id @default(autoincrement())
+  clientId          String  @unique @db.VarChar(100)
+  secretKey         String? @db.VarChar(255)
+  previousSecretKey String? @db.VarChar(255)
+  status            String  @db.VarChar(50)
+
+  payoutUrl String? @db.VarChar(512)
+  payinUrl  String? @db.VarChar(512)
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
 
   createdAt DateTime  @default(now())
   createdBy Int?      @db.Integer()

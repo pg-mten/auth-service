@@ -11,7 +11,6 @@ import { JWT } from 'src/shared/constant/auth.constant';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guard/jwt-auth.guard';
-import { MerchantSignatureAuthClient } from './auth/merchant-signature.auth.client';
 import { HealthModule } from './health/health.module';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { AuthInfoInterceptor } from 'src/shared/interceptor';
@@ -22,6 +21,7 @@ import { DisbursementTransactionClient } from './transaction/disbursement/disbur
 import { PdnProviderClient } from './provider/pdn/pdn.provider.client';
 import { RolesGuard } from './auth/guard/roles.guard';
 import { ProfileProviderConfigClient } from './config/profile-provider.config.client';
+import { MerchantSignatureAuthClient } from './merchant-signature/merchant-signature.auth.client';
 
 @Global()
 @Module({
@@ -31,13 +31,13 @@ import { ProfileProviderConfigClient } from './config/profile-provider.config.cl
     AgentConfigClient,
     MerchantConfigClient,
     SettlementSettleReconClient,
-    MerchantSignatureAuthClient,
     PurchaseTransactionClient,
     WithdrawTransacionClient,
     DisbursementTransactionClient,
     InacashProviderClient,
     PdnProviderClient,
     ProfileProviderConfigClient,
+    MerchantSignatureAuthClient,
   ],
   providers: [
     /// Register Client
@@ -46,13 +46,13 @@ import { ProfileProviderConfigClient } from './config/profile-provider.config.cl
     AgentConfigClient,
     MerchantConfigClient,
     SettlementSettleReconClient,
-    MerchantSignatureAuthClient,
     PurchaseTransactionClient,
     WithdrawTransacionClient,
     DisbursementTransactionClient,
     InacashProviderClient,
     PdnProviderClient,
     ProfileProviderConfigClient,
+    MerchantSignatureAuthClient,
 
     /// TODO Non aktifkan dulu bolooo
     JwtStrategy,
