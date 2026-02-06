@@ -6,9 +6,28 @@ import { PRISMA_SERVICE } from '../prisma/prisma.provider';
 import { MerchantSignatureStatusEnum } from 'src/shared/constant/auth.constant';
 import { FilterMerchantSignatureValidationSystemDto } from 'src/microservice/merchant-signature/filter-merchant-signature-validation.system.dto';
 import { MerchantSignatureValidationSystemDto } from 'src/microservice/merchant-signature/merchant-signature-validation.system.dto';
+import { FilterMerchantUrlSystemDto } from 'src/microservice/merchant-signature/filter-merchant-url.system.dto';
+import { MerchantUrlSystemDto } from 'src/microservice/merchant-signature/merchant-url.system.dto';
 
 export class MerchantSignatureService {
   constructor(@Inject(PRISMA_SERVICE) private readonly prisma: PrismaClient) {}
+
+  async findMerchantUrl(dto: FilterMerchantUrlSystemDto) {
+    const merchantUrl = await this.prisma.merchantSignature.findFirstOrThrow({
+      where: {
+        userId: dto.userId,
+      },
+      select: {
+        payinUrl: true,
+        payoutUrl: true,
+      },
+    });
+
+    return new MerchantUrlSystemDto({
+      payinUrl: merchantUrl.payinUrl,
+      payoutUrl: merchantUrl.payoutUrl,
+    });
+  }
 
   async generateSecretKey(authInfo: AuthInfoDto) {
     const { userId } = authInfo;

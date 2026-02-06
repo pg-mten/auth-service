@@ -10,6 +10,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SystemApi } from 'src/microservice/auth/decorator/system.decorator';
 import { MerchantApi } from 'src/microservice/auth/decorator/merchant.decorator';
 import { FilterMerchantSignatureValidationSystemDto } from 'src/microservice/merchant-signature/filter-merchant-signature-validation.system.dto';
+import { FilterMerchantUrlSystemDto } from 'src/microservice/merchant-signature/filter-merchant-url.system.dto';
 
 @ApiTags('Merchant Signature')
 @Controller('merchant-signature')
@@ -38,5 +39,20 @@ export class MerchantSignatureController {
     payload: FilterMerchantSignatureValidationSystemDto,
   ) {
     return this.service.validateSignature(payload);
+  }
+
+  @SystemApi()
+  @Get('/internal/merchant-url')
+  getMerchantUrl(@Query() filter: FilterMerchantUrlSystemDto) {
+    return this.service.findMerchantUrl(filter);
+  }
+
+  @MessagePattern({ cmd: SERVICES.AUTH.cmd.merchant_signature_url })
+  @UseInterceptors(ResponseInterceptor)
+  getMerchantUrlTCP(
+    @Payload(CustomValidationPipe)
+    payload: FilterMerchantUrlSystemDto,
+  ) {
+    return this.service.findMerchantUrl(payload);
   }
 }
