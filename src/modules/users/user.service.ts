@@ -117,8 +117,8 @@ export class UserService {
       const { settlementInterval } = body;
       try {
         const res = await this.merchantConfigClient.createTCP({
-          id: merchant.id,
-          agentId: authInfo.profileId,
+          id: user.id,
+          agentId: authInfo.userId,
           settlementInterval: settlementInterval,
         });
         console.log(res.data);
@@ -169,7 +169,7 @@ export class UserService {
       console.log({ user, agent });
 
       try {
-        const res = await this.agentConfigClient.createTCP({ id: agent.id });
+        const res = await this.agentConfigClient.createTCP({ id: user.id });
         console.log(res.data);
       } catch (error) {
         console.log(error);

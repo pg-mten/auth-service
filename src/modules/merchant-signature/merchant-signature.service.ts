@@ -35,9 +35,11 @@ export class MerchantSignatureService {
     const merchantSignature = await this.prisma.merchantSignature.findUnique({
       where: { clientId: headers.xClientId },
     });
+
     if (!merchantSignature?.secretKey) {
       return new MerchantSignatureValidationSystemDto({
         isValid: false,
+        userId: merchantSignature?.userId || 0,
         message: 'Merchant Secret Key not found',
       });
     }
@@ -47,6 +49,7 @@ export class MerchantSignatureService {
     ) {
       return new MerchantSignatureValidationSystemDto({
         isValid: false,
+        userId: merchantSignature.userId,
         message: 'Merchant Signature Status is not Active',
       });
     }
@@ -64,11 +67,12 @@ export class MerchantSignatureService {
     if (!CryptoHelper.isTimestampValid(headers.xTimestamp)) {
       return new MerchantSignatureValidationSystemDto({
         isValid: false,
+        userId: merchantSignature.userId,
         message: 'Request is expired',
       });
     }
 
-    // Nonce (Redis), makesure nonce is unique, not replayed and not used
+    // TODO Nonce (Redis), makesure nonce is unique, not replayed and not used twice
 
     const signatureValid = CryptoHelper.verifySignature(
       merchantSignature.secretKey,
@@ -78,6 +82,7 @@ export class MerchantSignatureService {
 
     return new MerchantSignatureValidationSystemDto({
       isValid: signatureValid,
+      userId: merchantSignature.userId,
       message: signatureValid ? 'Signature is valid' : 'Signature is invalid',
     });
   }
