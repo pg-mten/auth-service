@@ -23,18 +23,6 @@ export class MerchantSignatureController {
     return this.service.generateSecretKey(authInfo);
   }
 
-  // @Get('/decrypt')
-  // @PublicApi()
-  // decyrptPrivateKey(
-  //   @Headers('x-merchant-id') merchantId: string,
-  //   @Headers('x-signature') signature: string,
-  // ) {
-  //   return this.merchantSignatureService.validateSignatureRequest(
-  //     +merchantId,
-  //     signature,
-  //   );
-  // }
-
   @SystemApi()
   @Get('/internal/validate-signature')
   validateSignature(

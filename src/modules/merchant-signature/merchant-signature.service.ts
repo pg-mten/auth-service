@@ -92,44 +92,4 @@ export class MerchantSignatureService {
       where: { clientId },
     });
   }
-
-  // async validateSignatureRequest(merchantId: number, signature: string) {
-  //   const merchant = await this.prisma.merchantDetail.findFirst({
-  //     where: { userId: merchantId },
-  //   });
-  //   if (!merchant) {
-  //     throw ResponseException.fromHttpExecption(
-  //       new UnauthorizedException('Merchant Not Found'),
-  //     );
-  //   }
-  //   const storedKey = CryptoHelper.decrypt(merchant.privateKey || '');
-  //   if (storedKey !== signature) {
-  //     throw ResponseException.fromHttpExecption(
-  //       new UnauthorizedException('Signature not match'),
-  //     );
-  //   }
-  //   return true;
-  // }
-
-  // async validateSignature(filter: FilterMerchantValidateSignatureSystemDto) {
-  //   const { signature } = filter;
-  //   if (!signature)
-  //     throw ResponseException.fromHttpExecption(
-  //       new UnauthorizedException('Signature is null'),
-  //     );
-  //   const storedKey = CryptoHelper.decrypt(signature);
-  //   const [privateKey, authInfoParse] = storedKey.split(':');
-  //   const authInfoDto = JSON.parse(authInfoParse) as AuthInfoDto;
-
-  //   const merchant = await this.prisma.merchantDetail.findFirstOrThrow({
-  //     where: { privateKey },
-  //   });
-
-  //   const dto = new MerchantValidateSignatureSystemDto({
-  //     merchantId: merchant.id,
-  //     authInfo: authInfoDto,
-  //   });
-  //   console.log({ dto });
-  //   return dto;
-  // }
 }
