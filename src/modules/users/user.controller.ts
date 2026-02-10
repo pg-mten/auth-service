@@ -17,7 +17,7 @@ import {
 import { Roles } from '../../microservice/auth/decorator/roles.decorator';
 import { ROLE } from 'src/shared/constant/auth.constant';
 import { ProfileDto } from './dto/profile.dto';
-import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
+import { PublicApi, SystemApi } from 'src/microservice/auth/decorator';
 import { UserProfileService } from './user-profile.service';
 import { CreateMerchantDto } from '../merchant-detail/dto/create-merchant.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
@@ -29,7 +29,6 @@ import { ResponseInterceptor } from 'src/shared/interceptor/response.interceptor
 import { CustomValidationPipe } from 'src/shared/pipe/custom-validation.pipe';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
-import { SystemApi } from 'src/microservice/auth/decorator/system.decorator';
 import { FilterProfileBankSystemDto } from 'src/microservice/auth/dto-system/filter-profile-bank.system.dto';
 
 @Controller('user')

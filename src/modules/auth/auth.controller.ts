@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
+import { PublicApi } from 'src/microservice/auth/decorator';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { Request } from 'express';
 import {

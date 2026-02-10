@@ -7,8 +7,10 @@ import { PolicyHandler } from './types/policy-handler.type';
 import { PUBLIC_API_KEY } from '../../microservice/auth/decorator/public.decorator';
 import { Request } from 'express';
 import { ClsService } from 'nestjs-cls';
-import { SYSTEM_API_KEY } from 'src/microservice/auth/decorator/system.decorator';
-import { MERCHANT_API_KEY } from 'src/microservice/auth/decorator/merchant.decorator';
+import {
+  SYSTEM_API_KEY,
+  MERCHANT_API_KEY,
+} from 'src/microservice/auth/decorator';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {

@@ -2,13 +2,15 @@ import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MerchantSignatureService } from './merchant-signature.service';
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
-import { CurrentAuthInfo } from 'src/microservice/auth/decorator/current-auth-info.decorator';
+import {
+  CurrentAuthInfo,
+  SystemApi,
+  MerchantApi,
+} from 'src/microservice/auth/decorator';
 import { SERVICES } from 'src/shared/constant/client.constant';
 import { ResponseInterceptor } from 'src/shared/interceptor';
 import { CustomValidationPipe } from 'src/shared/pipe';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { SystemApi } from 'src/microservice/auth/decorator/system.decorator';
-import { MerchantApi } from 'src/microservice/auth/decorator/merchant.decorator';
 import { FilterMerchantSignatureValidationSystemDto } from 'src/microservice/merchant-signature/filter-merchant-signature-validation.system.dto';
 import { FilterMerchantUrlSystemDto } from 'src/microservice/merchant-signature/filter-merchant-url.system.dto';
 

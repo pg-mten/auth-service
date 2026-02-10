@@ -1,6 +1,6 @@
 import { Controller, Get, Request, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
+import { PublicApi } from 'src/microservice/auth/decorator';
 
 @Controller('app')
 export class AppController {

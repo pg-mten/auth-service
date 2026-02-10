@@ -14,7 +14,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CheckPolicies } from '../casl/policy.decorator';
 import { AppAbility } from '../casl/casl-ability.factory';
-import { CurrentAuthInfo } from 'src/microservice/auth/decorator/current-auth-info.decorator';
+import { CurrentAuthInfo } from 'src/microservice/auth/decorator';
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
 
 @ApiBearerAuth()

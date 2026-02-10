@@ -18,7 +18,7 @@ import {
 import { AgentDto } from './dto/agent.dto';
 import { ResponseDto, ResponseStatus } from 'src/shared/response.dto';
 import { AgentNameDto } from './dto/agent-name.dto';
-import { PublicApi } from 'src/microservice/auth/decorator/public.decorator';
+import { PublicApi } from 'src/microservice/auth/decorator';
 
 @ApiTags('Agent Detail')
 @ApiBearerAuth()
