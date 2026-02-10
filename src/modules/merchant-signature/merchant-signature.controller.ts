@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MerchantSignatureService } from './merchant-signature.service';
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
@@ -8,7 +8,6 @@ import {
   MerchantApi,
 } from 'src/microservice/auth/decorator';
 import { SERVICES } from 'src/shared/constant/client.constant';
-import { ResponseInterceptor } from 'src/shared/interceptor';
 import { CustomValidationPipe } from 'src/shared/pipe';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { FilterMerchantSignatureValidationSystemDto } from 'src/microservice/merchant-signature/filter-merchant-signature-validation.system.dto';
@@ -35,7 +34,6 @@ export class MerchantSignatureController {
   }
 
   @MessagePattern({ cmd: SERVICES.AUTH.cmd.merchant_signature_validation })
-  @UseInterceptors(ResponseInterceptor)
   validateSignatureTCP(
     @Payload(CustomValidationPipe)
     payload: FilterMerchantSignatureValidationSystemDto,
@@ -50,7 +48,6 @@ export class MerchantSignatureController {
   }
 
   @MessagePattern({ cmd: SERVICES.AUTH.cmd.merchant_signature_url })
-  @UseInterceptors(ResponseInterceptor)
   getMerchantUrlTCP(
     @Payload(CustomValidationPipe)
     payload: FilterMerchantUrlSystemDto,

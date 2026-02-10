@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import {
   ApiBearerAuth,
@@ -25,7 +18,6 @@ import { CreateAgentDto } from '../agent-detail/dto/create-agent.dto';
 import { FilterMerchantsAndAgentsByIdsSystemDto } from 'src/microservice/auth/dto-system/filter-merchants-and-agents-by-ids.system.dto';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { SERVICES } from 'src/shared/constant/client.constant';
-import { ResponseInterceptor } from 'src/shared/interceptor/response.interceptor';
 import { CustomValidationPipe } from 'src/shared/pipe/custom-validation.pipe';
 import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
@@ -95,7 +87,6 @@ export class UserController {
   @MessagePattern({
     cmd: SERVICES.AUTH.cmd.find_all_merchants_and_agents_by_ids,
   })
-  @UseInterceptors(ResponseInterceptor)
   async findAllMerchantsAndAgentsByIdsTCP(
     @Payload(CustomValidationPipe)
     payload: FilterMerchantsAndAgentsByIdsSystemDto,
@@ -113,7 +104,6 @@ export class UserController {
   }
 
   @MessagePattern({ cmd: SERVICES.AUTH.cmd.find_profile_bank })
-  @UseInterceptors(ResponseInterceptor)
   async findProfileBankTCP(
     @Payload(CustomValidationPipe) payload: FilterProfileBankSystemDto,
   ) {
