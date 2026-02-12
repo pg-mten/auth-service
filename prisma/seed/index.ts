@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthHelper } from '../../src/shared/helper/auth.helper';
-import { ROLE } from '../../src/shared/constant/auth.constant';
+import {
+  MerchantSignatureStatusEnum,
+  ROLE,
+} from '../../src/shared/constant/auth.constant';
+import { CryptoHelper } from 'src/shared/helper';
 
 const prisma = new PrismaClient();
 
@@ -217,6 +221,31 @@ async function main() {
         },
       }),
     ]);
+
+  await prisma.merchantSignature.createMany({
+    data: [
+      {
+        clientId: CryptoHelper.generateClientId(merchantUser1.id),
+        status: MerchantSignatureStatusEnum.ACTIVE,
+        userId: merchantUser1.id,
+      },
+      {
+        clientId: CryptoHelper.generateClientId(merchantUser2.id),
+        status: MerchantSignatureStatusEnum.ACTIVE,
+        userId: merchantUser2.id,
+      },
+      {
+        clientId: CryptoHelper.generateClientId(merchantUser3.id),
+        status: MerchantSignatureStatusEnum.ACTIVE,
+        userId: merchantUser3.id,
+      },
+      {
+        clientId: CryptoHelper.generateClientId(merchantUser4.id),
+        status: MerchantSignatureStatusEnum.ACTIVE,
+        userId: merchantUser4.id,
+      },
+    ],
+  });
 
   const merchantDetails = await prisma.$transaction([
     prisma.merchantDetail.create({

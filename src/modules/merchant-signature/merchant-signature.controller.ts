@@ -2,11 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MerchantSignatureService } from './merchant-signature.service';
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
-import {
-  CurrentAuthInfo,
-  SystemApi,
-  MerchantApi,
-} from 'src/microservice/auth/decorator';
+import { CurrentAuthInfo, SystemApi } from 'src/microservice/auth/decorator';
 import { SERVICES } from 'src/shared/constant/client.constant';
 import { CustomValidationPipe } from 'src/shared/pipe';
 import { MessagePattern, Payload } from '@nestjs/microservices';
@@ -19,7 +15,6 @@ export class MerchantSignatureController {
   constructor(private readonly service: MerchantSignatureService) {}
 
   @Get('/generate-secret-key')
-  @MerchantApi()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Generate Secret Key' })
   generateSecretKey(@CurrentAuthInfo() authInfo: AuthInfoDto) {
@@ -28,6 +23,7 @@ export class MerchantSignatureController {
 
   @SystemApi()
   @Get('/internal/validate-signature')
+  @ApiTags('Internal')
   validateSignature(
     @Query() filter: FilterMerchantSignatureValidationSystemDto,
   ) {
@@ -44,6 +40,7 @@ export class MerchantSignatureController {
 
   @SystemApi()
   @Get('/internal/merchant-url')
+  @ApiTags('Internal')
   getMerchantUrl(@Query() filter: FilterMerchantUrlSystemDto) {
     return this.service.findMerchantUrl(filter);
   }
