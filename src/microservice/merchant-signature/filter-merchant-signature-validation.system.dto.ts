@@ -1,11 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { MerchantSignatureHeaderDto } from './merchant-signature.header.decorator';
 import { HttpMethodEnum } from 'src/shared/constant/auth.constant';
 import { IsEnum } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class FilterMerchantSignatureValidationSystemDto {
-  @ApiProperty()
+  @ApiHideProperty()
   headers: MerchantSignatureHeaderDto;
 
   @ApiProperty({ enum: HttpMethodEnum })
