@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MerchantSignatureService } from './merchant-signature.service';
 import { AuthInfoDto } from 'src/microservice/auth/dto/auth-info.dto';
 import {
@@ -20,6 +20,7 @@ export class MerchantSignatureController {
 
   @Get('/generate-secret-key')
   @MerchantApi()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Generate Secret Key' })
   generateSecretKey(@CurrentAuthInfo() authInfo: AuthInfoDto) {
     return this.service.generateSecretKey(authInfo);
