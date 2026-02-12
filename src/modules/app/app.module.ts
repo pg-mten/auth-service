@@ -20,6 +20,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { CaslModule } from '../casl/casl.module';
 import { MicroserviceModule } from 'src/microservice/microservice.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { MerchantSignatureModule } from '../merchant-signature/merchant-signature.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     RolesModule,
     AgentDetailModule,
     MerchantDetailModule,
+    MerchantSignatureModule,
   ],
   controllers: [AppController],
   providers: [
