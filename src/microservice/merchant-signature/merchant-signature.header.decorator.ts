@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export class MerchantSignatureHeaderDto {
+export interface MerchantSignatureHeaderDto {
   xClientId: string;
   xTimestamp: string;
   xNonce: string;
