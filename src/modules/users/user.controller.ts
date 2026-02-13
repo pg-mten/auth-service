@@ -23,14 +23,14 @@ import { AuthInfoDto } from '../../microservice/auth/dto/auth-info.dto';
 import { CurrentAuthInfo } from '../../microservice/auth/decorator/current-auth-info.decorator';
 import { FilterProfileBankSystemDto } from 'src/microservice/auth/dto-system/filter-profile-bank.system.dto';
 
-@Controller('user')
+@Controller()
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly userProfileService: UserProfileService,
   ) {}
 
-  @Get('/profile')
+  @Get('user/profile')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Profile' })
   @ApiOkResponse({ type: ProfileDto })
@@ -39,20 +39,20 @@ export class UserController {
     return this.userProfileService.profile(authInfo);
   }
 
-  @Get('role')
+  @Get('user/role')
   @ApiBearerAuth()
   @Roles(ROLE.ADMIN_SUPER)
   roles(@CurrentAuthInfo() authInfo: AuthInfoDto) {
     return authInfo;
   }
 
-  @Get()
+  @Get('user')
   @PublicApi()
   findAll() {
     return this.userService.findAll();
   }
 
-  @Post('admin/register-merchant')
+  @Post('user/admin/register-merchant')
   @ApiOperation({ summary: 'Admin Register Merchant' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateMerchantDto })
@@ -65,7 +65,7 @@ export class UserController {
     return new ResponseDto({ status: ResponseStatus.CREATED });
   }
 
-  @Post('admin/register-agent')
+  @Post('user/admin/register-agent')
   @ApiOperation({ summary: 'Admin Register Agent' })
   @ApiBearerAuth()
   @ApiBody({ type: CreateAgentDto })
@@ -76,7 +76,7 @@ export class UserController {
 
   @SystemApi()
   @ApiTags('Internal')
-  @Get('internal/merchants-and-agents-by-ids')
+  @Get(SERVICES.AUTH.point.find_all_merchants_and_agents_by_ids.path)
   findAllMerchantsAndAgentsByIds(
     @Query() filter: FilterMerchantsAndAgentsByIdsSystemDto,
   ) {
@@ -85,7 +85,7 @@ export class UserController {
   }
 
   @MessagePattern({
-    cmd: SERVICES.AUTH.cmd.find_all_merchants_and_agents_by_ids,
+    cmd: SERVICES.AUTH.point.find_all_merchants_and_agents_by_ids.cmd,
   })
   async findAllMerchantsAndAgentsByIdsTCP(
     @Payload(CustomValidationPipe)
@@ -97,13 +97,13 @@ export class UserController {
 
   @SystemApi()
   @ApiTags('Internal')
-  @Get('internal/profile-bank')
+  @Get(SERVICES.AUTH.point.find_profile_bank.path)
   async findProfileBank(@Query() filter: FilterProfileBankSystemDto) {
     console.log({ filter });
     return this.userProfileService.findProfileBank(filter);
   }
 
-  @MessagePattern({ cmd: SERVICES.AUTH.cmd.find_profile_bank })
+  @MessagePattern({ cmd: SERVICES.AUTH.point.find_profile_bank.cmd })
   async findProfileBankTCP(
     @Payload(CustomValidationPipe) payload: FilterProfileBankSystemDto,
   ) {
